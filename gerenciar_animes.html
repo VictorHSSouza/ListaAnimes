@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Animes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Gerenciar Animes</h1>
+    
+    <!-- Login -->
+    <div id="loginForm" class="form-container">
+        <h2>Login do Administrador</h2>
+        <button onclick="loginComGoogle()" class="google-btn">
+            <span>🔑</span> Entrar com Google
+        </button>
+        <div id="loginStatus"></div>
+    </div>
+
+    <!-- Formulário para adicionar anime -->
+    <div id="adminPanel" class="form-container" style="display: none;">
+        <div class="admin-header">
+            <h2>Adicionar Novo Anime</h2>
+            <button onclick="sair()" class="logout-btn">Sair</button>
+        </div>
+        <form id="animeForm">
+            <input type="text" id="nome" placeholder="Nome do anime" required><br>
+            <input type="number" id="nota" placeholder="Nota (0-10) - Opcional" min="0" max="10" step="0.5"><br>
+            <textarea id="descricao" placeholder="Descrição do anime" rows="3" required></textarea><br>
+            
+            <!-- Opções de gênero -->
+            <div id="opcoes">
+                <label><input type="radio" name="generoTipo" value="manual" onchange="alterarTipoGenero()"> Selecionar gêneros manualmente</label><br>
+                <label><input type="radio" name="generoTipo" value="api" checked onchange="alterarTipoGenero()"> Buscar anime da API</label>
+            </div>
+            
+            <!-- Select manual -->
+            <div id="generoManual" style="display: none;">
+                <select id="genero" multiple>
+                    <option value="Ação">Ação</option>
+                    <option value="Aventura">Aventura</option>
+                    <option value="Comédia">Comédia</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Fantasia">Fantasia</option>
+                    <option value="Ficção Científica">Ficção Científica</option>
+                    <option value="Terror">Terror</option>
+                    <option value="Suspense">Suspense</option>
+                    <option value="Sobrenatural">Sobrenatural</option>
+                </select><br>
+                <small>Segure Ctrl (ou Cmd no Mac) para selecionar múltiplos gêneros</small><br>
+            </div>
+            
+            <!-- Select da API -->
+            <div id="generoApi">
+                <select id="animeApi"  required></select><br>
+                <small>Digite para pesquisar animes da API</small><br>
+            </div>
+            <button type="submit">Adicionar Anime</button>
+            <button type="button" onclick="resetarFormulario()">Reset</button>
+        </form>
+        <div id="status"></div>
+    </div>
+
+    <!-- Lista de animes -->
+    <h2><a href="index.html">Lista de Animes</a></h2>
+    <div id="loading" class="loading">Carregando...</div>
+    <div id="animes"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script type="module" src="app.js"></script>
+</body>
+</html>

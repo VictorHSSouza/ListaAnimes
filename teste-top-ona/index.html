@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Animes ONA</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>🏆 Top Animes ONA (Original Net Animation)</h1>
+    
+    <div class="search-container">
+        <h3>🔍 Pesquisar Anime</h3>
+        <select id="animeSearch" style="width: 100%;"></select>
+    </div>
+    
+    <div class="filter-container">
+        <h3>🏆 Top Animes por Tipo</h3>
+        <select id="typeFilter" onchange="loadTopAnimes()">
+            <option value="ona">ONA (Original Net Animation)</option>
+            <option value="tv">TV Series</option>
+            <option value="movie">Movies</option>
+            <option value="ova">OVA</option>
+            <option value="special">Specials</option>
+        </select>
+        <button onclick="loadTopAnimes()">🔄 Atualizar</button>
+    </div>
+    
+    <div id="loading" class="loading">Carregando top animes...</div>
+    <div id="results"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
