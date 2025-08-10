@@ -21,6 +21,7 @@ const provider = new GoogleAuthProvider();
 window.loginComGoogle = async () => {
     try {
         await signInWithPopup(auth, provider);
+        carregarAnimes();
         // A mensagem será exibida no onAuthStateChanged
     } catch (error) {
         document.getElementById('loginStatus').innerHTML = `<div style="color: red;">❌ ${error.message}</div>`;
@@ -30,6 +31,7 @@ window.loginComGoogle = async () => {
 // Função de logout
 window.sair = async () => {
     await signOut(auth);
+    carregarAnimes();   
 };
 
 // Email autorizado (substitua pelo seu email)
@@ -167,6 +169,7 @@ async function carregarAnimes() {
             const generosTexto = anime.generos ? anime.generos.join(', ') : anime.genero || 'N/A';
             const imagemHtml = anime.imagem ? `<img src="${anime.imagem}" alt="${anime.nome}" class="anime-image">` : '';
             const botaoAlterarAnime = isAuthorized ? `<button onclick="alterarAnime('${anime.id}')" class="btn-alterar">Alterar</button>` : '';
+            const botaoVisualizar = `<button onclick="visualizarAnime('${anime.id}')" class="btn-visualizar">Visualizar</button>`;
             
             // Pega a descrição mais recente
             let descricaoMaisRecente = anime.descricao;
@@ -174,14 +177,21 @@ async function carregarAnimes() {
                 descricaoMaisRecente = anime.descricoes[anime.descricoes.length - 1];
             }
             
+            // Verifica se comentários estão habilitados
+            const comentariosHabilitados = localStorage.getItem('comentariosHabilitados') === 'true';
+            const descricaoExibida = comentariosHabilitados ? descricaoMaisRecente : '<span id="amarelo">Cuidado Spoiler⚠️⚠️⚠️!!!</span>';
+            
             div.innerHTML = `
                 ${imagemHtml}
                 <div class="anime-content">
                     <h3>#${anime.ordem || 'N/A'} - ${anime.nome}</h3>
                     <p><strong>Nota:</strong> ${anime.nota !== null ? anime.nota + '/10 ⭐' : '???'}</p>
                     <p><strong>Gêneros:</strong> ${generosTexto}</p>
-                    <p><strong>Descrição:</strong> ${descricaoMaisRecente}</p>
-                    ${botaoAlterarAnime}
+                    <p><strong>Descrição:</strong> ${descricaoExibida}</p>
+                    <div class="botoes-anime">
+                        ${botaoVisualizar}
+                        ${botaoAlterarAnime}
+                    </div>
                 </div>
             `;
             container.appendChild(div);
@@ -337,5 +347,32 @@ window.alterarAnime = (animeId) => {
     window.location.href = `alterar_anime.html?id=${animeId}`;
 };
 
+// Função para visualizar anime
+window.visualizarAnime = (animeId) => {
+    window.location.href = `detalhes.html?id=${animeId}`;
+};
+
+// Função para alternar comentários
+window.toggleComentarios = () => {
+    const comentariosHabilitados = localStorage.getItem('comentariosHabilitados') === 'true';
+    const novoEstado = !comentariosHabilitados;
+    localStorage.setItem('comentariosHabilitados', novoEstado);
+    
+    const botao = document.getElementById('toggleComentarios');
+    botao.textContent = novoEstado ? 'Desabilitar Comentários' : 'Habilitar Comentários';
+    
+    carregarAnimes();
+};
+
+// Inicializa o botão de comentários
+function inicializarBotaoComentarios() {
+    const comentariosHabilitados = localStorage.getItem('comentariosHabilitados') === 'true';
+    const botao = document.getElementById('toggleComentarios');
+    if (botao) {
+        botao.textContent = comentariosHabilitados ? 'Desabilitar Comentários' : 'Habilitar Comentários';
+    }
+}
+
 // Carrega animes ao iniciar
 carregarAnimes();
+inicializarBotaoComentarios();

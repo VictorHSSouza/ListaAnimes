@@ -33,7 +33,7 @@ window.sair = async () => {
 
 // Função para voltar ao gerenciamento
 window.voltarGerenciar = () => {
-    window.location.href = 'index.html.html';
+    window.location.href = 'index.html';
 };
 
 // Email autorizado
@@ -112,32 +112,32 @@ if (alterarForm) {
         const nota = notaValue ? parseFloat(notaValue) : null;
         const descricao = document.getElementById('descricao').value;
         
-        // Verifica qual tipo de gênero foi selecionado
-        const tipoGenero = document.querySelector('input[name="generoTipo"]:checked').value;
-        let generos = [];
-        let imagemUrl = null;
-        
-        if (tipoGenero === 'manual') {
-            const generoSelect = document.getElementById('genero');
-            generos = Array.from(generoSelect.selectedOptions).map(option => option.value);
-            // Mantém imagem existente se for seleção manual
-            imagemUrl = animeAtual.imagem;
-        } else {
-            const animeApiSelect = document.getElementById('animeApi');
-            const selectedOption = animeApiSelect.selectedOptions[0];
-            if (selectedOption && selectedOption.dataset.anime) {
-                const animeData = JSON.parse(selectedOption.dataset.anime);
-                const generosIngles = animeData.genres?.map(g => g.name) || [];
-                generos = traduzirGeneros(generosIngles);
-                // Atualiza imagem da API
-                imagemUrl = animeData.images?.jpg?.image_url || animeAtual.imagem;
-            }
-        }
-        
         try {
             const docRef = doc(db, "animes", animeId);
             const docSnap = await getDoc(docRef);
             const animeAtual = docSnap.data();
+            
+            // Verifica qual tipo de gênero foi selecionado
+            const tipoGenero = document.querySelector('input[name="generoTipo"]:checked').value;
+            let generos = [];
+            let imagemUrl = null;
+            
+            if (tipoGenero === 'manual') {
+                const generoSelect = document.getElementById('genero');
+                generos = Array.from(generoSelect.selectedOptions).map(option => option.value);
+                // Mantém imagem existente se for seleção manual
+                imagemUrl = animeAtual.imagem;
+            } else {
+                const animeApiSelect = document.getElementById('animeApi');
+                const selectedOption = animeApiSelect.selectedOptions[0];
+                if (selectedOption && selectedOption.dataset.anime) {
+                    const animeData = JSON.parse(selectedOption.dataset.anime);
+                    const generosIngles = animeData.genres?.map(g => g.name) || [];
+                    generos = traduzirGeneros(generosIngles);
+                    // Atualiza imagem da API
+                    imagemUrl = animeData.images?.jpg?.image_url || animeAtual.imagem;
+                }
+            }
             
             // Verifica se a descrição mudou
             const descricoesExistentes = animeAtual.descricoes || [animeAtual.descricao].filter(Boolean);
