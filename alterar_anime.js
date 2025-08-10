@@ -70,11 +70,26 @@ async function carregarAnime() {
     }
     
     try {
-        const docRef = doc(db, "animes", animeId);
-        const docSnap = await getDoc(docRef);
+        // Tenta buscar na coleção "animes" primeiro
+        let docRef = doc(db, "animes", animeId);
+        let docSnap = await getDoc(docRef);
+        let colecaoOriginal = "animes";
+        
+        // Se não encontrar e usuário for autorizado, tenta na coleção "outros"
+        if (!docSnap.exists()) {
+            const user = auth.currentUser;
+            if (user && user.email === EMAIL_AUTORIZADO) {
+                docRef = doc(db, "outros", animeId);
+                docSnap = await getDoc(docRef);
+                colecaoOriginal = "outros";
+            }
+        }
         
         if (docSnap.exists()) {
             const anime = docSnap.data();
+            // Armazena a coleção original para usar na atualização
+            window.colecaoOriginal = colecaoOriginal;
+            
             document.getElementById('animeId').value = animeId;
             document.getElementById('nome').value = anime.nome || '';
             document.getElementById('nota').value = anime.nota || '';
@@ -113,7 +128,9 @@ if (alterarForm) {
         const descricao = document.getElementById('descricao').value;
         
         try {
-            const docRef = doc(db, "animes", animeId);
+            // Usa a coleção original onde o anime foi encontrado
+            const colecao = window.colecaoOriginal || "animes";
+            const docRef = doc(db, colecao, animeId);
             const docSnap = await getDoc(docRef);
             const animeAtual = docSnap.data();
             
@@ -264,7 +281,8 @@ function traduzirGeneros(generosIngles) {
         'Parody': 'Paródia',
         'Samurai': 'Samurai',
         'Harem': 'Harém',
-        'Ecchi': 'Ecchi'
+        'Ecchi': 'Ecchi',
+        'Hentai': 'Hentai'
     };
     
     return generosIngles.map(genero => traducoes[genero] || genero);

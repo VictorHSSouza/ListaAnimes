@@ -24,7 +24,7 @@ window.loginComGoogle = async () => {
         carregarAnimes();
         // A mensagem será exibida no onAuthStateChanged
     } catch (error) {
-        document.getElementById('loginStatus').innerHTML = `<div style="color: red;">❌ ${error.message}</div>`;
+        document.getElementById('loginStatus').innerHTML = `<div class="danger">❌ ${error.message}</div>`;
     }
 };
 
@@ -114,10 +114,13 @@ if (animeForm) {
     }
     
     try {
-        // Busca o próximo ID sequencial
-        const proximoId = await obterProximoId();
+        // Verifica se contém Hentai para definir coleção
+        const colecao = generos.includes('Hentai') ? 'outros' : 'animes';
         
-        await addDoc(collection(db, "animes"), {
+        // Busca o próximo ID sequencial
+        const proximoId = await obterProximoId(colecao);
+        
+        await addDoc(collection(db, colecao), {
             ordem: proximoId,
             nome: nome,
             nota: nota,
@@ -126,13 +129,12 @@ if (animeForm) {
             imagem: imagemUrl
         });
         
-        document.getElementById('status').innerHTML = '<div class="success">✅ Anime adicionado com sucesso!</div>';
-        document.getElementById('animeForm').reset();
-        $('#animeApi').val(null).trigger('change'); // Reinicia o Select2
+        resetarFormulario();
         carregarAnimes(); // Recarrega a lista
+        document.getElementById('status').innerHTML = '<div class="success">✅ Anime adicionado com sucesso!</div>';
         
     } catch (error) {
-        document.getElementById('status').innerHTML = `<div style="color: red;">❌ Erro: ${error.message}</div>`;
+        document.getElementById('status').innerHTML = `<div class="danger">❌ Erro: ${error.message}</div>`;
     }
     });
 }
@@ -164,6 +166,7 @@ async function carregarAnimes() {
         
         container.innerHTML = '';
         animes.forEach(anime => {
+            
             const div = document.createElement('div');
             div.className = 'anime';
             const generosTexto = anime.generos ? anime.generos.join(', ') : anime.genero || 'N/A';
@@ -209,9 +212,9 @@ async function carregarAnimes() {
 }
 
 // Função para obter o próximo ID sequencial
-async function obterProximoId() {
+async function obterProximoId(colecaoNome = "animes") {
     try {
-        const querySnapshot = await getDocs(collection(db, "animes"));
+        const querySnapshot = await getDocs(collection(db, colecaoNome));
         let maiorId = 0;
         
         querySnapshot.forEach((doc) => {
@@ -329,7 +332,8 @@ function traduzirGeneros(generosIngles) {
         'Parody': 'Paródia',
         'Samurai': 'Samurai',
         'Harem': 'Harém',
-        'Ecchi': 'Ecchi'
+        'Ecchi': 'Ecchi',
+        'Hentai': 'Hentai'
     };
     
     return generosIngles.map(genero => traducoes[genero] || genero);
@@ -337,9 +341,27 @@ function traduzirGeneros(generosIngles) {
 
 // Função para resetar formulário
 window.resetarFormulario = () => {
-    document.getElementById('animeForm').reset();
-    $('#animeApi').val(null).trigger('change');
-    document.getElementById('status').innerHTML = '';
+    // Reseta campos manualmente
+    const nome = document.getElementById('nome');
+    const nota = document.getElementById('nota');
+    const descricao = document.getElementById('descricao');
+    const genero = document.getElementById('genero');
+    
+    if (nome) nome.value = '';
+    if (nota) nota.value = '';
+    if (descricao) descricao.value = '';
+    if (genero) genero.selectedIndex = -1;
+    
+    // Reseta Select2
+    if (typeof $ !== 'undefined') {
+        $('#animeApi').val(null).trigger('change');
+    }
+    
+    // Limpa status
+    const status = document.getElementById('status');
+    if (status) {
+        status.innerHTML = '';
+    }
 };
 
 // Função para alterar anime
@@ -372,6 +394,24 @@ function inicializarBotaoComentarios() {
         botao.textContent = comentariosHabilitados ? 'Desabilitar Comentários' : 'Habilitar Comentários';
     }
 }
+
+// Função para mostrar/ocultar botão Outros
+function atualizarBotaoOutros() {
+    const user = auth.currentUser;
+    const botaoOutros = document.getElementById('btnOutros');
+    if (botaoOutros) {
+        if (user && user.email === EMAIL_AUTORIZADO) {
+            botaoOutros.style.display = 'block';
+        } else {
+            botaoOutros.style.display = 'none';
+        }
+    }
+}
+
+// Monitora autenticação para mostrar botão Outros
+onAuthStateChanged(auth, (user) => {
+    atualizarBotaoOutros();
+});
 
 // Carrega animes ao iniciar
 carregarAnimes();

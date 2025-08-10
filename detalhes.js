@@ -1,5 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDYjQHR5D9R6-NeI2F1rKHcE96awGqH6to",
@@ -13,6 +14,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+const EMAIL_AUTORIZADO = 'victorhenriquesantanasouza@gmail.com';
 
 // Função para obter ID da URL
 function obterIdDaUrl() {
@@ -31,8 +35,18 @@ async function carregarDetalhes() {
     }
 
     try {
-        const docRef = doc(db, "animes", animeId);
-        const docSnap = await getDoc(docRef);
+        // Tenta buscar na coleção "animes" primeiro
+        let docRef = doc(db, "animes", animeId);
+        let docSnap = await getDoc(docRef);
+
+        // Se não encontrar e usuário for autorizado, tenta na coleção "outros"
+        if (!docSnap.exists()) {
+            const user = auth.currentUser;
+            if (user && user.email === EMAIL_AUTORIZADO) {
+                docRef = doc(db, "outros", animeId);
+                docSnap = await getDoc(docRef);
+            }
+        }
 
         document.getElementById('loading').style.display = 'none';
 
@@ -92,5 +106,7 @@ function exibirDetalhes(anime) {
     document.querySelector('h1').innerHTML = `#${anime.ordem || 'N/A'} - ${anime.nome}`;
 }
 
-// Carrega detalhes ao iniciar
-carregarDetalhes();
+// Monitora autenticação e carrega detalhes
+onAuthStateChanged(auth, (user) => {
+    carregarDetalhes();
+});
