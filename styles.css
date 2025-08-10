@@ -21,10 +21,16 @@ h2 {
 .anime {
     border: 1px solid #ddd;
     padding: 10px;
-    margin: 10px 0;
+    margin: 14px 0;
     border-radius: 5px;
     display: flex;
     align-items: stretch;
+    box-shadow: 1px 1px 3px black;
+    transition: transform 0.3s ease;
+}
+
+.anime:hover {
+    transform: scale(1.01);
 }
 
 .anime-image {
@@ -59,6 +65,11 @@ h2 {
     gap: 10px;
     margin-top: 10px;
     flex-wrap: wrap;
+}
+
+#loginStatus .danger{
+    margin-bottom: 0;
+    margin-left: 5px;
 }
 
 .btn-visualizar {
@@ -268,8 +279,29 @@ button:not(.select2-selection__clear):hover {
     gap: 10px;
 }
 
+.google-btn:hover {
+    background: #c23321 !important;
+}
+
+.btn-outros {
+    background: #6f42c1 !important;
+    margin-right: 10px !important;
+}
+
+.btn-outros:hover {
+    background: #5a32a3 !important;
+}
+
+#btnOutros{
+    margin: 0;
+}
+
 .logout-btn {
     background: #dc3545 !important;
+}
+
+.logout-btn:hover {
+    background: #c82333 !important;
 }
 
 .admin-header {
@@ -315,14 +347,23 @@ textarea {
 
     .anime-image {
         width: 100%;
-        height: 200px;
+        height: 250px;
         margin-right: 0;
         margin-bottom: 15px;
+        border: 0.5px black solid;
     }
 
     .anime-content {
         width: 100%;
     }
+
+    #loginForm h2{
+        margin-left: 1px !important;
+    }
+
+    #loginStatus .danger{
+    margin-left: 0px;
+}
 
     input,
     select,
@@ -372,6 +413,11 @@ textarea {
     #toggleComentarios {
         width: 100% !important;
     }
+    
+    #btnOutros {
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
 
     .form-container {
         margin: 20px 10px;
@@ -408,6 +454,11 @@ textarea {
         padding: 0 10px;
     }
 
+    .btn-outros {
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+    
     .logout-btn {
         width: 100% !important;
     }
@@ -421,7 +472,7 @@ textarea {
         width: 100%;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 0px !important;
     }
 
     .admin-header h2 {
@@ -448,6 +499,10 @@ textarea {
     object-fit: cover;
     border-radius: 8px;
     flex-shrink: 0;
+}
+
+#anime-detalhes .danger{
+    margin-left: 20px !important;
 }
 
 .anime-detalhes-content {
@@ -520,9 +575,13 @@ textarea {
         margin-left: 1px;
     }
 
+    #anime-detalhes .danger{
+        margin: 10px !important;
+    }
+
     .anime-image-detalhes {
         width: 100%;
-        max-width: 300px;
+        max-width: 450px;
         align-self: center;
     }
 
