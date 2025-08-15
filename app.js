@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getFirestore, collection, getDocs, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, getDocs, addDoc, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const firebaseConfig = {
@@ -81,17 +81,30 @@ if (animeForm) {
     animeForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    const tipoAdicao = document.querySelector('input[name="tipoAdicao"]:checked').value;
+    
+    if (tipoAdicao === 'vincular') {
+        // Lógica para vincular temporada
+        await adicionarTemporada();
+    } else {
+        // Lógica para adicionar novo anime
+        await adicionarNovoAnime();
+    }
+    });
+}
+
+// Função para adicionar novo anime
+async function adicionarNovoAnime() {
     const nome = document.getElementById('nome').value;
     const notaValue = document.getElementById('nota').value;
     const nota = notaValue ? parseFloat(notaValue) : null;
-    // Verifica qual tipo de gênero foi selecionado
-    const tipoGenero = document.querySelector('input[name="generoTipo"]:checked').value;
+    const tipoAdicao = document.querySelector('input[name="tipoAdicao"]:checked').value;
     let generos = [];
     
-    if (tipoGenero === 'manual') {
+    if (tipoAdicao === 'manual') {
         const generoSelect = document.getElementById('genero');
         generos = Array.from(generoSelect.selectedOptions).map(option => option.value);
-    } else {
+    } else if (tipoAdicao === 'api') {
         const animeApiSelect = document.getElementById('animeApi');
         const selectedOption = animeApiSelect.selectedOptions[0];
         if (selectedOption && selectedOption.dataset.anime) {
@@ -104,7 +117,7 @@ if (animeForm) {
     
     // Captura URL da imagem se for da API
     let imagemUrl = null;
-    if (tipoGenero === 'api') {
+    if (tipoAdicao === 'api') {
         const animeApiSelect = document.getElementById('animeApi');
         const selectedOption = animeApiSelect.selectedOptions[0];
         if (selectedOption && selectedOption.dataset.anime) {
@@ -114,10 +127,7 @@ if (animeForm) {
     }
     
     try {
-        // Verifica se contém Hentai para definir coleção
         const colecao = generos.includes('Hentai') ? 'outros' : 'animes';
-        
-        // Busca o próximo ID sequencial
         const proximoId = await obterProximoId(colecao);
         
         await addDoc(collection(db, colecao), {
@@ -130,42 +140,145 @@ if (animeForm) {
         });
         
         resetarFormulario();
-        carregarAnimes(); // Recarrega a lista
+        carregarAnimes();
         document.getElementById('status').innerHTML = '<div class="success">✅ Anime adicionado com sucesso!</div>';
         
     } catch (error) {
         document.getElementById('status').innerHTML = `<div class="danger">❌ Erro: ${error.message}</div>`;
     }
-    });
 }
+
+// Função para adicionar temporada
+async function adicionarTemporada() {
+    const animeId = document.getElementById('animeExistente').value;
+    const nome = document.getElementById('nome').value;
+    const notaValue = document.getElementById('nota').value;
+    const nota = notaValue ? parseFloat(notaValue) : null;
+    const descricao = document.getElementById('descricao').value;
+    
+    if (!animeId) {
+        document.getElementById('status').innerHTML = '<div class="danger">❌ Selecione um anime para vincular!</div>';
+        return;
+    }
+    
+    try {
+        // Busca o anime existente
+        const animeDoc = await getDoc(doc(db, 'animes', animeId));
+        if (!animeDoc.exists()) {
+            throw new Error('Anime não encontrado!');
+        }
+        
+        const animeData = animeDoc.data();
+        const temporadas = animeData.temporadas || [];
+        
+        // Gera automaticamente o próximo número de temporada
+        const proximaTemporada = temporadas.length + 1;
+        
+        // Adiciona nova temporada
+        temporadas.push({
+            numero: proximaTemporada,
+            nome: nome,
+            nota: nota,
+            descricao: descricao
+        });
+        
+        // Atualiza o documento
+        await updateDoc(doc(db, 'animes', animeId), {
+            temporadas: temporadas
+        });
+        
+        resetarFormulario();
+        carregarAnimes();
+        document.getElementById('status').innerHTML = `<div class="success">✅ ${proximaTemporada}ª Temporada adicionada com sucesso!</div>`;
+        
+    } catch (error) {
+        document.getElementById('status').innerHTML = `<div class="danger">❌ Erro: ${error.message}</div>`;
+    }
+}
+
+// Variável global para armazenar animes
+let todosAnimes = [];
 
 // Função para carregar animes
 async function carregarAnimes() {
     try {
         const querySnapshot = await getDocs(collection(db, "animes"));
-        const animes = [];
+        todosAnimes = [];
         
         querySnapshot.forEach((doc) => {
-            animes.push({ id: doc.id, ...doc.data() });
+            todosAnimes.push({ id: doc.id, ...doc.data() });
         });
 
         document.getElementById('loading').style.display = 'none';
-        const container = document.getElementById('animes');
-
-        if (animes.length === 0) {
-            container.innerHTML = '<p>Nenhum anime encontrado.</p>';
+        
+        if (todosAnimes.length === 0) {
+            document.getElementById('animes').innerHTML = '<p>Nenhum anime encontrado.</p>';
             return;
         }
 
-        // Ordena animes pelo campo ordem
-        animes.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+        popularFiltroGeneros();
+        exibirAnimes(todosAnimes);
+
+    } catch (error) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('animes').innerHTML = `
+            <div class="anime" style="background-color: #ffe6e6; border-color: #ff9999;">
+                <h3>Erro Firebase</h3>
+                <p><strong>Detalhes:</strong> ${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+// Função para exibir animes com filtros aplicados
+function exibirAnimes(animes) {
+    const container = document.getElementById('animes');
+    
+    // Aplica filtro de pesquisa
+    const termoPesquisa = document.getElementById('pesquisaAnime')?.value.toLowerCase() || '';
+    const generoSelecionado = document.getElementById('filtroGenero')?.value || '';
+    const notaMinima = parseFloat(document.getElementById('filtroNota')?.value) || 0;
+    
+    let animesFiltrados = animes.filter(anime => {
+        // Filtro por nome
+        const nomeMatch = anime.nome.toLowerCase().includes(termoPesquisa);
         
-        // Verifica se usuário está autorizado
-        const user = auth.currentUser;
-        const isAuthorized = user && user.email === EMAIL_AUTORIZADO;
+        // Filtro por gênero
+        const generoMatch = !generoSelecionado || 
+            (anime.generos && anime.generos.includes(generoSelecionado));
         
-        container.innerHTML = '';
-        animes.forEach(anime => {
+        // Filtro por nota mínima
+        const notaMatch = !notaMinima || (anime.nota && anime.nota >= notaMinima);
+        
+        return nomeMatch && generoMatch && notaMatch;
+    });
+    
+    // Aplica ordenação
+    const tipoOrdem = document.getElementById('filtroOrdem')?.value || 'ordem';
+    switch (tipoOrdem) {
+        case 'alfabetica':
+            animesFiltrados.sort((a, b) => a.nome.localeCompare(b.nome));
+            break;
+        case 'nota':
+            animesFiltrados.sort((a, b) => {
+                const notaA = a.nota || 0;
+                const notaB = b.nota || 0;
+                if (notaB !== notaA) {
+                    return notaB - notaA;
+                }
+                return (a.ordem || 0) - (b.ordem || 0);
+            });
+            break;
+        default: // 'ordem'
+            animesFiltrados.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+    }
+    
+    // Verifica se usuário está autorizado
+    const user = auth.currentUser;
+    const isAuthorized = user && user.email === EMAIL_AUTORIZADO;
+    
+    container.innerHTML = '';
+    animesFiltrados.forEach(anime => {
             
             const div = document.createElement('div');
             div.className = 'anime';
@@ -199,16 +312,6 @@ async function carregarAnimes() {
             `;
             container.appendChild(div);
         });
-
-    } catch (error) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('animes').innerHTML = `
-            <div class="anime" style="background-color: #ffe6e6; border-color: #ff9999;">
-                <h3>Erro Firebase</h3>
-                <p><strong>Detalhes:</strong> ${error.message}</p>
-            </div>
-        `;
-    }
 }
 
 // Função para obter o próximo ID sequencial
@@ -231,25 +334,39 @@ async function obterProximoId(colecaoNome = "animes") {
     }
 }
 
-// Função para alternar tipo de gênero
-window.alterarTipoGenero = () => {
-    const tipoGenero = document.querySelector('input[name="generoTipo"]:checked').value;
+// Função para alternar tipo de adição
+window.alterarTipoAdicao = () => {
+    const tipoAdicao = document.querySelector('input[name="tipoAdicao"]:checked').value;
     const generoManual = document.getElementById('generoManual');
     const generoApi = document.getElementById('generoApi');
+    const animeVinculado = document.getElementById('animeVinculado');
     
-    if (tipoGenero === 'manual') {
+    // Oculta todas as seções primeiro
+    generoManual.style.display = 'none';
+    generoApi.style.display = 'none';
+    animeVinculado.style.display = 'none';
+    
+    // Remove required de todos
+    document.getElementById('genero').required = false;
+    document.getElementById('animeApi').required = false;
+    document.getElementById('animeExistente').required = false;
+    
+    if (tipoAdicao === 'manual') {
         generoManual.style.display = 'block';
-        generoApi.style.display = 'none';
         document.getElementById('genero').required = true;
-        document.getElementById('animeApi').required = false;
-    } else {
-        generoManual.style.display = 'none';
+    } else if (tipoAdicao === 'api') {
         generoApi.style.display = 'block';
-        document.getElementById('genero').required = false;
         document.getElementById('animeApi').required = true;
         inicializarApiSelect();
+    } else if (tipoAdicao === 'vincular') {
+        animeVinculado.style.display = 'block';
+        document.getElementById('animeExistente').required = true;
+        popularAnimesExistentes();
     }
 };
+
+// Mantém compatibilidade com código existente
+window.alterarTipoGenero = window.alterarTipoAdicao;
 
 // Função para inicializar Select2 da API
 function inicializarApiSelect() {
@@ -346,11 +463,13 @@ window.resetarFormulario = () => {
     const nota = document.getElementById('nota');
     const descricao = document.getElementById('descricao');
     const genero = document.getElementById('genero');
+    const animeExistente = document.getElementById('animeExistente');
     
     if (nome) nome.value = '';
     if (nota) nota.value = '';
     if (descricao) descricao.value = '';
     if (genero) genero.selectedIndex = -1;
+    if (animeExistente) animeExistente.selectedIndex = 0;
     
     // Reseta Select2
     if (typeof $ !== 'undefined') {
@@ -413,6 +532,119 @@ onAuthStateChanged(auth, (user) => {
     atualizarBotaoOutros();
 });
 
+// Função para popular filtro de gêneros
+function popularFiltroGeneros() {
+    const filtroGenero = document.getElementById('filtroGenero');
+    if (!filtroGenero || todosAnimes.length === 0) return;
+    
+    const generosUnicos = new Set();
+    todosAnimes.forEach(anime => {
+        if (anime.generos) {
+            anime.generos.forEach(genero => {
+                if (genero !== 'Hentai') {
+                    generosUnicos.add(genero);
+                }
+            });
+        }
+    });
+    
+    // Limpa opções existentes (exceto "Todos os Gêneros")
+    filtroGenero.innerHTML = '<option value="">Todos os Gêneros</option>';
+    
+    // Adiciona gêneros ordenados
+    Array.from(generosUnicos).sort().forEach(genero => {
+        const option = document.createElement('option');
+        option.value = genero;
+        option.textContent = genero;
+        filtroGenero.appendChild(option);
+    });
+}
+
+// Event listeners para filtros
+function inicializarFiltros() {
+    const pesquisaInput = document.getElementById('pesquisaAnime');
+    const filtroGenero = document.getElementById('filtroGenero');
+    const filtroNota = document.getElementById('filtroNota');
+    const filtroOrdem = document.getElementById('filtroOrdem');
+    
+    const aplicarFiltros = () => {
+        if (todosAnimes.length > 0) {
+            exibirAnimes(todosAnimes);
+        }
+    };
+    
+    if (pesquisaInput) {
+        pesquisaInput.addEventListener('input', aplicarFiltros);
+    }
+    
+    if (filtroGenero) {
+        filtroGenero.addEventListener('change', aplicarFiltros);
+    }
+    
+    if (filtroNota) {
+        filtroNota.addEventListener('input', aplicarFiltros);
+    }
+    
+    if (filtroOrdem) {
+        filtroOrdem.addEventListener('change', aplicarFiltros);
+    }
+}
+
+// Função para mostrar/ocultar filtros avançados
+window.toggleFiltros = () => {
+    const filtrosAvancados = document.getElementById('filtrosAvancados');
+    const isVisible = filtrosAvancados.style.display !== 'none';
+    filtrosAvancados.style.display = isVisible ? 'none' : 'flex';
+};
+
+// Função para limpar todos os filtros
+window.limparFiltros = () => {
+    document.getElementById('pesquisaAnime').value = '';
+    document.getElementById('filtroGenero').value = '';
+    document.getElementById('filtroNota').value = '';
+    document.getElementById('filtroOrdem').value = 'ordem';
+    
+    // Fecha a caixa de filtros
+    document.getElementById('filtrosAvancados').style.display = 'none';
+    
+    if (todosAnimes.length > 0) {
+        exibirAnimes(todosAnimes);
+    }
+};
+
+
+
+// Função para popular select com animes existentes
+async function popularAnimesExistentes() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "animes"));
+        const animeSelect = document.getElementById('animeExistente');
+        
+        // Limpa opções existentes
+        animeSelect.innerHTML = '<option value="">Selecione um anime...</option>';
+        
+        const animes = [];
+        querySnapshot.forEach((doc) => {
+            animes.push({ id: doc.id, ...doc.data() });
+        });
+        
+        // Ordena por ordem
+        animes.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+        
+        // Adiciona opções
+        animes.forEach(anime => {
+            const option = document.createElement('option');
+            option.value = anime.id;
+            option.textContent = `#${anime.ordem} - ${anime.nome}`;
+            animeSelect.appendChild(option);
+        });
+        
+    } catch (error) {
+        console.error('Erro ao carregar animes existentes:', error);
+    }
+}
+
 // Carrega animes ao iniciar
 carregarAnimes();
 inicializarBotaoComentarios();
+inicializarFiltros();

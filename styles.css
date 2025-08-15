@@ -128,12 +128,26 @@ select {
     width: fit-content;
 }
 
+#animeVinculado {
+    margin-left: 5px;
+}
+
+#animeExistente {
+    width: 600px;
+    margin-left: 0;
+    margin-top: 0 !important;
+}
+
 select[multiple] {
     height: 120px;
 }
 
 #generoApi {
     margin-left: 5px;
+}
+
+#animeApi{
+    width: 600px;
 }
 
 .select2-container--default .select2-selection--single {
@@ -228,9 +242,96 @@ button:not(.select2-selection__clear):hover {
 
 .botoes-topo {
     display: flex;
+    justify-content: space-between;
     gap: 10px;
     margin-bottom: 20px;
     align-items: center;
+}
+
+.botoes-esquerda {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.filtros-direita {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+}
+
+.pesquisa-container {
+    display: flex;
+    align-items: center;
+}
+
+#pesquisaAnime {
+    width: 200px !important;
+    margin: 0 !important;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    font-size: 13px;
+}
+
+#toggleFiltros {
+    width: 40px !important;
+    height: 33px !important;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    margin: 0 !important;
+    font-size: 16px;
+    padding: 0 !important;
+    background: #6848a3 !important;
+    border: 1px solid black;
+    border-left: 0;
+}
+
+#toggleFiltros:hover {
+    background: #5a32a3 !important;
+}
+
+#filtrosAvancados {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+#filtroGenero {
+    width: 150px !important;
+    margin: 0 !important;
+}
+
+#filtroNota {
+    width: 120px !important;
+    margin: 0 !important;
+}
+
+#filtroOrdem {
+    width: 150px !important;
+    margin: 0 !important;
+}
+
+#limparFiltros {
+    width: 40px !important;
+    height: 34px !important;
+    margin: 0 !important;
+    font-size: 16px;
+    padding: 0 !important;
+    background: #dc3545 !important;
+}
+
+#limparFiltros:hover {
+    background: #c82333 !important;
 }
 
 #toggleComentarios {
@@ -341,7 +442,7 @@ textarea {
     .anime {
         flex-direction: column;
         align-items: center;
-        margin: 10px 10px;
+        margin: 20px 10px;
         padding: 15px;
     }
 
@@ -403,6 +504,56 @@ textarea {
     .botoes-topo {
         flex-direction: column;
         margin: 0 15px 20px 15px;
+    }
+
+    .botoes-esquerda {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .filtros-direita {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .pesquisa-container {
+        width: 100%;
+    }
+
+    #pesquisaAnime {
+        flex: 1 !important;
+        width: auto !important;
+    }
+
+    #toggleFiltros {
+        width: 50px !important;
+        flex-shrink: 0;
+    }
+
+    #filtrosAvancados {
+        position: static !important;
+        flex-direction: column;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        background: transparent;
+    }
+
+    #filtroGenero {
+        width: 100% !important;
+    }
+
+    #filtroNota {
+        width: 100% !important;
+    }
+
+    #filtroOrdem {
+        width: 100% !important;
+    }
+
+    #limparFiltros {
+        width: 100% !important;
     }
 
     #adicionar {
@@ -478,6 +629,10 @@ textarea {
     .admin-header h2 {
         margin: 0 5px;
         font-size: 20px;
+    }
+
+    .admin-header div .logout-btn{
+        order: -1;
     }
 }
 

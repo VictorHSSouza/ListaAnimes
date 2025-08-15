@@ -5,16 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Animes</title>
-    <link rel="icon" href="images/Favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/Images/Favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <h1>Lista de Animes</h1>
     <div class="botoes-topo">
-        <a href="gerenciar_animes.html" id="adicionar">Adicionar Anime</a>
-        <button id="toggleComentarios" onclick="toggleComentarios()">Habilitar Comentários</button>
-        <button id="btnOutros" onclick="window.location.href='outros.html'" class="btn-outros" style="display: none;">Ver Outros</button>
+        <div class="botoes-esquerda">
+            <a href="gerenciar_animes.html" id="adicionar">Adicionar Anime</a>
+            <button id="toggleComentarios" onclick="toggleComentarios()">Habilitar Comentários</button>
+            <button id="btnOutros" onclick="window.location.href='outros.html'" class="btn-outros" style="display: none;">Ver Outros</button>
+        </div>
+        <div class="filtros-direita">
+            <div class="pesquisa-container">
+                <input type="text" id="pesquisaAnime" placeholder="Pesquisar anime...">
+                <button id="toggleFiltros" onclick="toggleFiltros()" title="Filtros">⚙️</button>
+            </div>
+            <div id="filtrosAvancados" style="display: none;">
+                <select id="filtroGenero">
+                    <option value="">Todos os Gêneros</option>
+                </select>
+                <input type="number" id="filtroNota" placeholder="Nota mínima" min="0" max="10" step="0.5" oninput="if(this.value>10)this.value=10;">
+                <select id="filtroOrdem">
+                    <option value="ordem">Ordem Assistida</option>
+                    <option value="alfabetica">Ordem Alfabética</option>
+                    <option value="nota">Por Nota</option>
+                </select>
+                <button id="limparFiltros" onclick="limparFiltros()" title="Limpar Filtros">🗑️</button>
+            </div>
+        </div>
     </div>
     <div id="loading" class="loading">Carregando...</div>
 

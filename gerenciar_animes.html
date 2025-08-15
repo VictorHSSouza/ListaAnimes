@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Animes</title>
-    <link rel="icon" href="images/Favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/images/Favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -33,10 +33,19 @@
             <input type="number" id="nota" placeholder="Nota (0-10) - Opcional" min="0" max="10" step="0.5"><br>
             <textarea id="descricao" placeholder="Descrição do anime" rows="3" required></textarea><br>
             
-            <!-- Opções de gênero -->
+            <!-- Opções de tipo -->
             <div id="opcoes">
-                <label><input type="radio" name="generoTipo" value="manual" onchange="alterarTipoGenero()"> Selecionar gêneros manualmente</label><br>
-                <label><input type="radio" name="generoTipo" value="api" checked onchange="alterarTipoGenero()"> Buscar anime da API</label>
+                <label><input type="radio" name="tipoAdicao" value="api" checked onchange="alterarTipoAdicao()"> Buscar anime da API</label><br>
+                <label><input type="radio" name="tipoAdicao" value="manual" onchange="alterarTipoAdicao()"> Selecionar gêneros manualmente</label><br>
+                <label><input type="radio" name="tipoAdicao" value="vincular" onchange="alterarTipoAdicao()"> Vincular anime existente</label>
+            </div>
+            
+            <!-- Select para vincular anime -->
+            <div id="animeVinculado" style="display: none;">
+                <select id="animeExistente">
+                    <option value="">Selecione um anime...</option>
+                </select><br>
+                <small>Selecione um anime já cadastrado no banco. O número da temporada será gerado automaticamente.</small><br>
             </div>
             
             <!-- Select manual -->
