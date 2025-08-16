@@ -468,7 +468,7 @@ button:not(.select2-selection__clear):hover {
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    z-index: 1000;
+    z-index: 1 !important;
 }
 
 #filtroGenero {
