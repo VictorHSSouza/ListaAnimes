@@ -1,0 +1,29 @@
+<h1>Lista de Animes</h1>
+<div class="botoes-topo">
+    <div class="botoes-esquerda">
+        <button id="toggleComentarios" onclick="toggleComentarios()">Habilitar Comentários</button>
+    </div>
+    <div class="filtros-direita">
+        <div class="pesquisa-container">
+            <input type="text" id="pesquisaAnime" placeholder="Pesquisar anime...">
+            <button id="toggleFiltros" onclick="toggleFiltros()" title="Filtros">⚙️</button>
+        </div>
+        <div id="filtrosAvancados" style="display: none;">
+            <select id="filtroGenero">
+                <option value="">Todos os Gêneros</option>
+            </select>
+            <input type="number" id="filtroNota" placeholder="Nota mínima" min="0" max="10" step="0.5" oninput="if(this.value>10)this.value=10;">
+            <select id="filtroOrdem">
+                <option value="ordem">Ordem Assistida</option>
+                <option value="alfabetica">Ordem Alfabética</option>
+                <option value="nota">Por Nota</option>
+            </select>
+            <button id="limparFiltros" onclick="limparFiltros()" title="Limpar Filtros">🗑️</button>
+        </div>
+    </div>
+</div>
+<div id="loading" class="loading">Carregando...</div>
+
+<div id="divAnimes">
+    <div id="animes"></div>
+</div>

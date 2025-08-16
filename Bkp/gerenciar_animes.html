@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Animes</title>
     <link rel="icon" href="/images/Favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.0">
 </head>
 <body>
     <h1>Gerenciar Animes</h1>
@@ -95,7 +95,7 @@
             <!-- Select da API -->
             <div id="generoApi">
                 <select id="animeApi"  required></select><br>
-                <small>Digite para pesquisar animes da API</small><br>
+                <small id="apiHelp">Digite para pesquisar animes da API</small><br>
             </div>
             <button type="submit">Adicionar Anime</button>
             <button type="button" onclick="resetarFormulario()" id="reset">Reset</button>
@@ -111,6 +111,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script type="module" src="app.js"></script>
+    <script type="module" src="app.js?v=1.0"></script>
 </body>
 </html>

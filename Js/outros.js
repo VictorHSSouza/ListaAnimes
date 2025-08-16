@@ -18,16 +18,7 @@ const auth = getAuth(app);
 
 const EMAIL_AUTORIZADO = 'victorhenriquesantanasouza@gmail.com';
 
-// Monitora autenticação e controla acesso
-onAuthStateChanged(auth, (user) => {
-    if (!user || user.email !== EMAIL_AUTORIZADO) {
-        // Redireciona para index se não autorizado
-        window.location.href = 'index.html';
-        return;
-    }
-    // Se autorizado, carrega os animes
-    carregarOutros();
-});
+
 
 // Função para carregar animes da coleção "outros"
 async function carregarOutros() {
@@ -98,12 +89,20 @@ async function carregarOutros() {
 
 // Função para alterar anime
 window.alterarAnime = (animeId) => {
-    window.location.href = `alterar_anime.html?id=${animeId}`;
+    if (typeof navigateTo !== 'undefined') {
+        navigateTo(`alterar?id=${animeId}`);
+    } else {
+        window.location.href = `alterar_anime.html?id=${animeId}`;
+    }
 };
 
 // Função para visualizar anime
 window.visualizarAnime = (animeId) => {
-    window.location.href = `detalhes.html?id=${animeId}`;
+    if (typeof navigateTo !== 'undefined') {
+        navigateTo(`detalhes?id=${animeId}`);
+    } else {
+        window.location.href = `detalhes.html?id=${animeId}`;
+    }
 };
 
 // Função para alternar comentários
@@ -126,5 +125,32 @@ function inicializarBotaoComentarios() {
         botao.textContent = comentariosHabilitados ? 'Desabilitar Comentários' : 'Habilitar Comentários';
     }
 }
+
+// Função de inicialização para outros
+function inicializar() {
+    inicializarBotaoComentarios();
+    // Verifica autenticação e carrega dados
+    const user = auth.currentUser;
+    if (user && user.email === EMAIL_AUTORIZADO) {
+        carregarOutros();
+    } else {
+        // Aguarda autenticação
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.email === EMAIL_AUTORIZADO) {
+                carregarOutros();
+            }
+        });
+    }
+}
+
+// Executa inicialização quando DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializar);
+} else {
+    setTimeout(inicializar, 100);
+}
+
+// Exporta função para uso no SPA
+window.inicializarApp = inicializar;
 
 inicializarBotaoComentarios();

@@ -1,48 +1,52 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Animes</title>
-    <link rel="icon" href="/Images/Favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
+    <title id="page-title">Lista de Animes</title>
+    <link rel="icon" href="images/Favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="Css/styles.css?v=1.4">
+    <!-- Bootstrap CSS local do node_modules -->
+    <!-- <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
-
 <body>
-    <h1>Lista de Animes</h1>
-    <div class="botoes-topo">
-        <div class="botoes-esquerda">
-            <a href="gerenciar_animes.html" id="adicionar">Adicionar Anime</a>
-            <button id="toggleComentarios" onclick="toggleComentarios()">Habilitar Comentários</button>
-            <button id="btnOutros" onclick="window.location.href='outros.html'" class="btn-outros" style="display: none;">Ver Outros</button>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="Images/Favicon.png" id="logo" alt="">
+            <h1>Lista de Animes</h1>
         </div>
-        <div class="filtros-direita">
-            <div class="pesquisa-container">
-                <input type="text" id="pesquisaAnime" placeholder="Pesquisar anime...">
-                <button id="toggleFiltros" onclick="toggleFiltros()" title="Filtros">⚙️</button>
+        <div class="navbar-menu">
+            <!-- Menu Desktop -->
+            <div class="navbar-desktop">
+                <a href="#" onclick="navigateTo('index'); return false;" class="nav-link"><span>🏠</span> Home</a>
+                <a href="#" onclick="loginComGoogle(); return false;" class="nav-link login-only" style="display: none;"><span>🔑</span> Login</a>
+                <a href="#" onclick="navigateTo('gerenciar'); return false;" class="nav-link admin-only" style="display: none;"><span>➕</span> Gerenciar</a>
+                <a href="#" onclick="navigateTo('outros'); return false;" class="nav-link admin-only" style="display: none;"><span>🔞</span> Outros</a>
+                <a href="#" onclick="sair(); return false;" class="nav-link admin-only" style="display: none;"><span>🚪</span> Sair</a>
             </div>
-            <div id="filtrosAvancados" style="display: none;">
-                <select id="filtroGenero">
-                    <option value="">Todos os Gêneros</option>
-                </select>
-                <input type="number" id="filtroNota" placeholder="Nota mínima" min="0" max="10" step="0.5" oninput="if(this.value>10)this.value=10;">
-                <select id="filtroOrdem">
-                    <option value="ordem">Ordem Assistida</option>
-                    <option value="alfabetica">Ordem Alfabética</option>
-                    <option value="nota">Por Nota</option>
-                </select>
-                <button id="limparFiltros" onclick="limparFiltros()" title="Limpar Filtros">🗑️</button>
+            
+            <!-- Menu Mobile (Dropdown) -->
+            <div class="dropdown">
+                <button class="dropdown-btn" onclick="toggleDropdown()">☰</button>
+                <div class="dropdown-content" id="dropdown-content">
+                    <a href="#" onclick="navigateTo('index'); return false;"><span>🏠</span> Home</a>
+                    <a href="#" onclick="loginComGoogle(); return false;" class="login-only" style="display: none;"><span>🔑</span> Login</a>
+                    <a href="#" onclick="navigateTo('gerenciar'); return false;" class="admin-only" style="display: none;"><span>➕</span> Gerenciar</a>
+                    <a href="#" onclick="navigateTo('outros'); return false;" class="admin-only" style="display: none;"><span>🔞</span> Outros</a>
+                    <a href="#" onclick="sair(); return false;" class="admin-only" style="display: none;"><span>🚪</span> Sair</a>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="loading" class="loading">Carregando...</div>
-
-    <div id="divAnimes">
-        <div id="animes"></div>
-    </div>
-
-    <script type="module" src="app.js"></script>
+    </nav>
+    <div id="app-content"></div>
+    
+    <!-- Scripts sempre carregados -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS local do node_modules -->
+    <!-- <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="module" src="Js/router.js"></script>
+    <script type="module" src="Js/all.js"></script>
 </body>
-
 </html>
