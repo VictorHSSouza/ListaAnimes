@@ -1,5 +1,6 @@
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDYjQHR5D9R6-NeI2F1rKHcE96awGqH6to",
@@ -13,10 +14,13 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // Exporta instâncias para uso global
 window.firebaseApp = app;
 window.firebaseAuth = auth;
+window.auth = auth; // Para compatibilidade com router
+window.db = db; // Para uso nos outros scripts
 
 // Função para controlar dropdown
 window.toggleDropdown = () => {

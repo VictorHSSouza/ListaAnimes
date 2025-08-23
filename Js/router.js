@@ -20,6 +20,35 @@ class Router {
         this.loadRoute();
     }
     
+    async checkAuth() {
+        return new Promise(async (resolve) => {
+            try {
+                // Aguarda Firebase estar disponível
+                for (let i = 0; i < 50; i++) {
+                    if (window.auth) break;
+                    await new Promise(r => setTimeout(r, 100));
+                }
+                
+                if (!window.auth) {
+                    resolve(false);
+                    return;
+                }
+                
+                // Usa onAuthStateChanged para aguardar estado real
+                const { onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                
+                const unsubscribe = onAuthStateChanged(window.auth, (user) => {
+                    unsubscribe();
+                    const isAuthorized = user && user.email === 'victorhenriquesantanasouza@gmail.com';
+                    resolve(isAuthorized);
+                });
+                
+            } catch (error) {
+                resolve(false);
+            }
+        });
+    }
+    
     async loadRoute() {
         const fullHash = window.location.hash.slice(1) || '';
         const [path, params] = fullHash.split('?');
@@ -27,12 +56,8 @@ class Router {
         
         // Verifica se é página protegida
         if (path === 'outros' || path === 'alterar' || path === 'gerenciar') {
-            // Importa Firebase auth para verificar
-            const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
-            const auth = getAuth();
-            const user = auth.currentUser;
-            
-            if (!user || user.email !== 'victorhenriquesantanasouza@gmail.com') {
+            const isAuthorized = await this.checkAuth();
+            if (!isAuthorized) {
                 // Redireciona para home se não autorizado
                 this.navigate('index');
                 return;
@@ -46,7 +71,7 @@ class Router {
         window.routeParams = new URLSearchParams(params || '');
         
         try {
-            const response = await fetch(route);
+            const response = await fetch(`${route}?v=${Date.now()}`);
             const html = await response.text();
             document.getElementById('app-content').innerHTML = html;
             

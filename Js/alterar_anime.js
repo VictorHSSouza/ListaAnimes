@@ -175,13 +175,17 @@ if (alterarForm) {
                 
                 const temporadaAtual = temporadas[indexTemporada];
                 
-                // Captura imagem da API se selecionada
+                // Captura imagem, anime_slug e animeLink da API se selecionada
                 let imagemUrl = temporadaAtual.imagem;
+                let animeSlug = temporadaAtual.anime_slug;
+                let animeLink = temporadaAtual.animeLink;
                 const animeApiSelect = document.getElementById('animeApi');
                 const selectedOption = animeApiSelect.selectedOptions[0];
                 if (selectedOption && selectedOption.dataset.anime) {
                     const animeData = JSON.parse(selectedOption.dataset.anime);
-                    imagemUrl = animeData.images?.jpg?.image_url || temporadaAtual.imagem;
+                    imagemUrl = animeData.thumbnail || temporadaAtual.imagem;
+                    animeSlug = animeData.slug || temporadaAtual.anime_slug;
+                    animeLink = animeData.animeLink || temporadaAtual.animeLink;
                 }
                 
                 // Verifica se a descrição mudou
@@ -190,7 +194,7 @@ if (alterarForm) {
                 const novasDescricoes = descricao !== descricaoAtual ? [...descricoesExistentes, descricao] : descricoesExistentes;
                 
                 // Atualiza temporada
-                temporadas[indexTemporada] = {
+                const novaTemporadaData = {
                     ...temporadaAtual,
                     nome: nome,
                     nota: nota,
@@ -198,6 +202,15 @@ if (alterarForm) {
                     descricoes: novasDescricoes,
                     imagem: imagemUrl
                 };
+                
+                if (animeSlug !== undefined && animeSlug !== null) {
+                    novaTemporadaData.anime_slug = animeSlug;
+                }
+                if (animeLink !== undefined && animeLink !== null) {
+                    novaTemporadaData.animeLink = animeLink;
+                }
+                
+                temporadas[indexTemporada] = novaTemporadaData;
                 
                 await updateDoc(docRef, {
                     temporadas: temporadas
@@ -213,19 +226,24 @@ if (alterarForm) {
                 const tipoGenero = document.querySelector('input[name="generoTipo"]:checked').value;
                 let generos = [];
                 let imagemUrl = null;
+                let animeSlug = null;
+                let animeLink = null;
                 
                 if (tipoGenero === 'manual') {
                     const generoSelect = document.getElementById('genero');
                     generos = Array.from(generoSelect.selectedOptions).map(option => option.value);
                     imagemUrl = animeAtual.imagem;
+                    animeSlug = animeAtual.anime_slug;
+                    animeLink = animeAtual.animeLink;
                 } else {
                     const animeApiSelect = document.getElementById('animeApi');
                     const selectedOption = animeApiSelect.selectedOptions[0];
                     if (selectedOption && selectedOption.dataset.anime) {
                         const animeData = JSON.parse(selectedOption.dataset.anime);
-                        const generosIngles = animeData.genres?.map(g => g.name) || [];
-                        generos = traduzirGeneros(generosIngles);
-                        imagemUrl = animeData.images?.jpg?.image_url || animeAtual.imagem;
+                        generos = animeData.genres || [];
+                        imagemUrl = animeData.thumbnail || animeAtual.imagem;
+                        animeSlug = animeData.slug || animeAtual.anime_slug;
+                        animeLink = animeData.animeLink || animeAtual.animeLink;
                     }
                 }
                 
@@ -233,14 +251,23 @@ if (alterarForm) {
                 const descricaoAtual = descricoesExistentes[descricoesExistentes.length - 1] || '';
                 const novasDescricoes = descricao !== descricaoAtual ? [...descricoesExistentes, descricao] : descricoesExistentes;
                 
-                await updateDoc(docRef, {
+                const updateData = {
                     nome: nome,
                     nota: nota,
                     generos: generos,
                     descricoes: novasDescricoes,
                     descricao: descricao,
                     imagem: imagemUrl
-                });
+                };
+                
+                if (animeSlug !== undefined && animeSlug !== null) {
+                    updateData.anime_slug = animeSlug;
+                }
+                if (animeLink !== undefined && animeLink !== null) {
+                    updateData.animeLink = animeLink;
+                }
+                
+                await updateDoc(docRef, updateData);
                 
                 document.getElementById('status').innerHTML = '<div class="success">✅ Anime alterado com sucesso!</div>';
                 setTimeout(() => {
@@ -269,7 +296,7 @@ window.alterarTipoGenero = () => {
         generoManual.style.display = 'none';
         generoApi.style.display = 'block';
         document.getElementById('genero').required = false;
-        document.getElementById('animeApi').required = true;
+        document.getElementById('animeApi').required = false;
         inicializarApiSelect();
     }
 };
@@ -281,16 +308,19 @@ function inicializarApiSelect() {
             placeholder: 'Digite o nome do anime para pesquisar...',
             allowClear: true,
             ajax: {
-                url: function (params) {
-                    return `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(params.term)}&limit=10`;
-                },
+                url: 'http://18.230.118.237/anime/search',
                 dataType: 'json',
                 delay: 300,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
                 processResults: function (data) {
                     return {
-                        results: data.data.map(anime => ({
-                            id: anime.mal_id,
-                            text: anime.title,
+                        results: data.result.map(anime => ({
+                            id: anime.animeName,
+                            text: anime.animeName,
                             anime: anime
                         }))
                     };
@@ -298,11 +328,11 @@ function inicializarApiSelect() {
                 cache: true
             },
             minimumInputLength: 2,
-            templateResult: function(anime) {
+            templateResult: function (anime) {
                 if (anime.loading) return anime.text;
                 return $(`<div>${anime.text}</div>`);
             },
-            templateSelection: function(anime) {
+            templateSelection: function (anime) {
                 if (anime.anime) {
                     const option = document.querySelector(`#animeApi option[value="${anime.id}"]`);
                     if (option) {
@@ -366,3 +396,38 @@ window.resetarFormulario = () => {
     carregarAnime(); // Recarrega os dados originais
     document.getElementById('status').innerHTML = '';
 };
+
+// Função para aplicar máscara no campo nota
+function aplicarMascaraNota() {
+    const notaInput = document.getElementById('nota');
+    if (notaInput) {
+        notaInput.addEventListener('input', function() {
+            let valor = parseFloat(this.value);
+            if (valor > 10) {
+                this.value = '10';
+            }
+        });
+    }
+}
+
+// Função de inicialização
+async function inicializar() {
+    await carregarAnime();
+    aplicarMascaraNota();
+    
+    // Mostra a página após tudo carregar
+    setTimeout(() => {
+        console.log("Carregando...");
+        document.body.classList.add('loaded');
+    }, 100);
+}
+
+// Executa inicialização quando DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializar);
+} else {
+    setTimeout(inicializar, 100);
+}
+
+// Exporta função para uso no SPA
+window.inicializarApp = inicializar;

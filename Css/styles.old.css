@@ -15,38 +15,35 @@
 }
 
 /* Força estilos customizados sobre Bootstrap */
-.navbar:not(.navbar-expand) {
+/* .navbar:not(.navbar-expand) {
     background: linear-gradient(135deg, #007cba 0%, #005a87 100%) !important;
     padding: 10px 20px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
     position: sticky !important;
     z-index: 1000 !important;
     top: 0 !important;
-}
+} */
 
 body {
     margin: 0;
-    background-color: #f4f4f4;
-    visibility: hidden;
+    background-color: #f4f4f4 !important;
+    visibility: hidden !important;
 }
 
 body.loaded {
-    visibility: visible;
+    visibility: visible !important;
 }
 
 .navbar {
     background: linear-gradient(135deg, #007cba 0%, #005a87 100%);
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     position: sticky;
     z-index: 1000;
     top: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+    padding: 10px 8px !important;
 }
 
 .navbar-brand {
@@ -54,20 +51,36 @@ body.loaded {
     justify-content: center;
     align-items: center;
     gap: 20px;
+    padding: 0 !important;
 }
 
 .navbar-brand h1 {
-    color: white;
+    color: white !important;
     margin: 0;
     font-size: 36px;
     font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.navbar-brand img{
+.navbar-brand img {
     width: 100px;
 }
 
+.navbar-toggler {
+    width: auto !important;
+}
+
+.navbar-collapse {
+    display: flex;
+    justify-content: end;
+}
+
+.navbar-nav {
+    display: flex;
+    gap: 16px;
+}
+
+/*
 .navbar-menu {
     position: relative;
 }
@@ -77,27 +90,25 @@ body.loaded {
     gap: 15px;
     align-items: center;
 }
-
+*/
 .nav-link {
-    color: white;
-    text-decoration: none;
-    padding: 8px 16px;
+    color: white !important;
+    padding: 8px 16px !important;
     border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 .nav-link:hover {
-    background: rgba(255,255,255,0.2);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
 }
+
+/*
 
 .dropdown {
     position: relative;
@@ -105,9 +116,9 @@ body.loaded {
 }
 
 .dropdown-btn {
-    background: rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.15);
     color: white;
-    border: 1px solid rgba(255,255,255,0.4);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
@@ -116,13 +127,13 @@ body.loaded {
     transition: all 0.3s ease;
     width: auto;
     margin: 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-btn:hover {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.25);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .dropdown-content {
@@ -131,7 +142,7 @@ body.loaded {
     right: 0;
     background-color: white;
     min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     z-index: 1001;
     overflow: hidden;
@@ -158,28 +169,44 @@ body.loaded {
 
 .dropdown.active .dropdown-content {
     display: block;
-}
+} */
 
 #app-content {
     margin: 30px;
 }
 
 #app-content h1 {
-    font-size: 52px;
+    font-size: 52px !important;
     margin-bottom: 30px;
     text-align: center;
-    color: #333;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+h1 {
+    color: #333 !important;
+    font-weight: bold !important;
 }
 
 h2 {
-    margin-bottom: 20px;
+    margin-bottom: 20px !important;
+    display: block;
+    font-size: 1.5em !important;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold !important;
+    unicode-bidi: isolate;
+}
+
+strong {
+    color: black;
 }
 
 .anime {
     border: 1px solid #ddd;
     padding: 10px;
-    margin: 14px 0;
+    margin: 16px 0 !important;
     border-radius: 5px;
     display: flex;
     align-items: stretch;
@@ -189,6 +216,13 @@ h2 {
 
 .anime:hover {
     transform: scale(1.01);
+}
+
+.anime h3 {
+    font-size: 1.17em;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 0;
 }
 
 .anime-ativo {
@@ -215,6 +249,8 @@ h2 {
 .anime-content p {
     font-size: 14px;
     line-height: 1.4;
+    margin-bottom: 0 !important;
+    color: black;
 }
 
 .anime-content p img.emoji,
@@ -238,8 +274,9 @@ h2 {
 .btn-visualizar {
     background: #28a745 !important;
     font-size: 12px !important;
-    padding: 5px 10px !important;
+    padding: 6px 10px !important;
     width: 80px !important;
+    line-height: normal !important;
     margin: 0 !important;
 }
 
@@ -250,8 +287,9 @@ h2 {
 .btn-alterar {
     background: #007bff !important;
     font-size: 12px !important;
-    padding: 5px 10px !important;
+    padding: 6px 10px !important;
     width: 80px !important;
+    line-height: normal !important;
     margin: 0 !important;
 }
 
@@ -274,12 +312,13 @@ h2 {
 
 input,
 select {
-    padding: 8px;
-    margin: 5px;
+    padding: 8px !important;
+    margin: 5px !important;
     width: 600px;
-    font-size: 12px;
+    font-size: 12px !important;
     border-radius: 5px;
     border: 1px black solid;
+    line-height: normal !important;
 }
 
 #opcoes {
@@ -287,22 +326,38 @@ select {
     margin-bottom: 10px;
 }
 
-#opcoes input {
+#opcoes label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     width: fit-content;
 }
 
-#divOpcoes div{
-    display: flex;
-    flex-direction: column;
+#opcoes input {
+    width: fit-content;
+
 }
 
 #animeVinculado {
     margin-bottom: 10px;
+    margin-left: 5px;
 }
 
 #animeExistente {
     width: 600px;
+    margin-left: 0 !important;
     margin-top: 0 !important;
+    margin-bottom: 5px !important;
+}
+
+#generoManual{
+    margin-left: 5px;
+}
+
+#genero{
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    padding-left: 10px !important;
 }
 
 select[multiple] {
@@ -310,6 +365,7 @@ select[multiple] {
 }
 
 #generoApi {
+    display: flex;
     margin-left: 5px;
     width: 100%;
 }
@@ -357,9 +413,28 @@ select[multiple] {
 
 small {
     color: #666;
-    font-size: 12px;
-    margin-left: 5px;
-    margin-bottom: 5px;
+    font-size: 12px !important;
+    line-height: normal !important;
+    margin-left: 2px !important;
+}
+
+#opcoesSelect div{
+    flex-direction: column;
+}
+
+#listaGenero{
+    margin-top: 24px;
+    font-size: 36px !important;
+    margin-left: 6px;
+    margin-bottom: 24px;
+}
+
+#listaGenero a:hover{
+    color: #007cba !important;
+}
+
+#listaGenero a:hover{
+    color: #005a87 !important;
 }
 
 button:not(.select2-selection__clear) {
@@ -373,6 +448,7 @@ button:not(.select2-selection__clear) {
     margin-top: 10px;
     font-size: 13px;
     width: 200px;
+    line-height: normal;
 }
 
 button:not(.select2-selection__clear):hover {
@@ -400,11 +476,6 @@ button:not(.select2-selection__clear):hover {
 
 #toggleComentarios:hover {
     background: #005a87;
-}
-
-#adicionar{
-    margin-top: 0 !important;
-    width: 180px !important;
 }
 
 #reset {
@@ -443,7 +514,6 @@ button:not(.select2-selection__clear):hover {
 
 #pesquisaAnime {
     width: 200px !important;
-    height: 33px;
     margin: 0 !important;
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
@@ -452,7 +522,7 @@ button:not(.select2-selection__clear):hover {
 
 #toggleFiltros {
     width: 40px !important;
-    height: 33px !important;
+    height: 31.3px !important;
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
     margin: 0 !important;
@@ -478,23 +548,27 @@ button:not(.select2-selection__clear):hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     z-index: 1 !important;
 }
 
 #filtroGenero {
-    width: 150px !important;
+    width: 180px !important;
     margin: 0 !important;
+    font-size: 13px !important;
 }
 
 #filtroNota {
-    width: 120px !important;
+    width: 150px !important;
     margin: 0 !important;
+    font-size: 13px !important;
+    line-height: normal;
 }
 
 #filtroOrdem {
-    width: 150px !important;
+    width: 160px !important;
     margin: 0 !important;
+    font-size: 13px !important;
 }
 
 #limparFiltros {
@@ -584,11 +658,12 @@ button:not(.select2-selection__clear):hover {
 textarea {
     width: 600px;
     padding: 8px;
-    margin: 5px;
-    resize: vertical;
+    margin: 5px !important;
+    resize: vertical !important;
+    line-height: normal  !important;
     max-height: 150px;
     min-height: 32.8px;
-    font-size: 12px;
+    font-size: 12px !important;
     border-radius: 5px;
     border: 1px black solid;
 }
@@ -624,12 +699,10 @@ textarea {
     background: #0056b3 !important;
 }
 
-.divAlterar{
-        width: 30%;
-    }
-
 .anime-image-detalhes {
-    width: 400px;
+    width: 40%;
+    max-width: 400px;
+    min-width: 300px;
     height: auto;
     object-fit: cover;
     border-radius: 8px;
@@ -697,9 +770,10 @@ textarea {
 }
 
 .detalhes_titulo {
-    width: 80%;
-    padding-top: 20px;
-    padding-left: 20px;
+    width: 80% !important;
+    text-align: left !important;
+    padding-top: 20px !important;
+    padding-left: 20px !important;
 }
 
 #btn-visualizar_detalhes {
@@ -736,7 +810,7 @@ textarea {
     .dropdown {
         display: none;
     }
-    
+
     .navbar-desktop {
         display: flex;
     }
@@ -746,46 +820,52 @@ textarea {
     .navbar-desktop {
         display: none;
     }
-    
+
     .dropdown {
         display: inline-block;
     }
-    
+
     .navbar {
         gap: 10px;
         padding: 15px;
     }
-    
-    .navbar-brand{
-        gap: 10px;
+
+    .navbar-brand {
+        gap: 10px !important;
+        margin-right: 0 !important;
     }
-    
+
     .navbar-brand h1 {
         font-size: 24px;
+        white-space: wrap;
     }
-    
+
     .navbar-menu {
         display: flex;
         justify-content: center;
     }
-    
-    .dropdown-btn {
-        width: 50px;
-        height: 50px;
-        padding: 30px 20px !important;
-        text-align: center;
-        font-size: 24px !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
+
+    .navbar .container-fluid{
+        padding-left: 0 !important;
+        padding-right: 0px !important;
+        gap: 10px;
     }
-    
-    .dropdown-content {
-        right: 0;
-        width: 200px;
+
+    .navbar-toggler{
+        padding: 15px !important;
+        font-size: 24px;
+        flex-wrap: wrap !important;
     }
-    
+
+    .navbar-toggler-collapsed{
+        height: fit-content !important;
+    }
+
+    .navbar-toggler-icon{
+        height: 24px !important;
+        width: 24px !important;
+    }
+
     #app-content {
         margin: 10px;
     }
@@ -921,11 +1001,6 @@ textarea {
         width: 100% !important;
     }
 
-    #adicionar{
-        margin: 0;
-        width: 100% !important;
-    }
-    
     #btnOutros {
         width: 100% !important;
         margin-right: 0 !important;
@@ -935,7 +1010,7 @@ textarea {
         margin: 20px 10px;
     }
 
-    .select2 {
+    .select2-container {
         width: 100% !important;
     }
 
@@ -954,6 +1029,7 @@ textarea {
     small {
         margin-left: 3px;
         display: block;
+        margin-bottom: 0;
     }
 
     .google-btn {
@@ -974,7 +1050,7 @@ textarea {
         width: 100% !important;
         margin-right: 0 !important;
     }
-    
+
     .logout-btn {
         width: 100% !important;
     }
@@ -1010,6 +1086,11 @@ textarea {
         margin-left: 1px;
     }
 
+    .anime-detalhes-titulo {
+        flex-direction: column;
+        justify-content: start;
+    }
+
     #anime-detalhes .danger {
         margin: 10px !important;
     }
@@ -1021,24 +1102,20 @@ textarea {
     }
 
     .detalhes_titulo {
-        font-size: 28px;
-        margin: 15px 10px;
-        padding: 0 15px;
-        width: 100%;
-        text-align: left;
+        font-size: 28px !important;
+        margin: 15px 10px !important;
+        padding: 0 15px !important;
+        width: 100% !important;
+        text-align: left !important;
     }
 
     .btn-voltar {
         width: 100% !important;
     }
-    
+
     .btn-alterar-detalhes {
         width: 100% !important;
+        max-width: 100%;
         margin-bottom: 15px !important;
-        padding: 10px 10% !important;
-    }
-
-    .divAlterar{
-        width: 40%;
     }
 }

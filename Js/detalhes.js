@@ -143,7 +143,7 @@ function exibirDetalhes(anime, temporada = null) {
             <div class="anime-detalhes-content">
                 <div class="anime-detalhes-titulo">
                     <div><h2>${titulo}</h2></div>
-                    <div>${botaoAlterar}</div>
+                    <div class="divAlterar">${botaoAlterar}</div>
                 </div>
                 <div class="detalhes-info">
                     <p><strong>Nota:</strong> ${nota}</p>
@@ -174,7 +174,7 @@ function exibirDetalhes(anime, temporada = null) {
         document.title = `${anime.nome} - Lista de Animes`;
     }
     
-    document.querySelector('h1').innerHTML = tituloH1;
+    document.querySelector('#detalhes_titulo').innerHTML = tituloH1;
     
     // Adiciona botão voltar ao anime no header se estiver visualizando temporada
     const divVoltar = document.getElementById('div-voltar');
@@ -273,7 +273,27 @@ window.alterarTemporada = (animeId, numeroTemporada) => {
     }
 };
 
+// Função de inicialização
+async function inicializar() {
+    await carregarDetalhes();
+    // Mostra a página após tudo carregar
+    setTimeout(() => {
+        console.log("Carregando...");
+        document.body.classList.add('loaded');
+    }, 100);
+}
+
 // Monitora autenticação e carrega detalhes
 onAuthStateChanged(auth, (user) => {
-    carregarDetalhes();
+    // Não precisa recarregar aqui, já é feito na inicialização
 });
+
+// Executa inicialização quando DOM estiver pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializar);
+} else {
+    setTimeout(inicializar, 100);
+}
+
+// Exporta função para uso no SPA
+window.inicializarApp = inicializar;

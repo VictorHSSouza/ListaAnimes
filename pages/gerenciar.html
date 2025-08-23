@@ -21,71 +21,79 @@
         <input type="text" id="nome" placeholder="Nome do anime" required><br>
         <input type="number" id="nota" placeholder="Nota (0-10) - Opcional" min="0" max="10" step="0.5"><br>
         <textarea id="descricao" placeholder="Descrição do anime" rows="3" required></textarea><br>
-        
+
         <!-- Opções de tipo -->
         <div id="opcoes">
-            <label><input type="radio" name="tipoAdicao" value="api" checked onchange="alterarTipoAdicao()"> Buscar anime da API</label><br>
-            <label><input type="radio" name="tipoAdicao" value="manual" onchange="alterarTipoAdicao()"> Selecionar gêneros manualmente</label><br>
-            <label><input type="radio" name="tipoAdicao" value="vincular" onchange="alterarTipoAdicao()"> Vincular anime existente</label>
+            <label><input type="radio" name="tipoAdicao" value="api" checked onchange="alterarTipoAdicao()"> Buscar
+                anime da API</label><br>
+            <label><input type="radio" name="tipoAdicao" value="manual" onchange="alterarTipoAdicao()"> Selecionar
+                gêneros manualmente</label><br>
+            <label><input type="radio" name="tipoAdicao" value="vincular" onchange="alterarTipoAdicao()"> Vincular anime
+                existente</label>
         </div>
-        
-        <!-- Select para vincular anime -->
-        <div id="animeVinculado" style="display: none;">
-            <select id="animeExistente">
-                <option value="">Selecione um anime...</option>
-            </select><br>
-            <small>Selecione um anime já cadastrado no banco. O número da temporada será gerado automaticamente.</small><br>
+
+        <div id="divOpcoes">
+            <!-- Select para vincular anime -->
+            <div id="animeVinculado" style="display: none;">
+                <select id="animeExistente">
+                    <option value="">Selecione um anime...</option>
+                </select>
+                <small >Selecione um anime já cadastrado no banco. O número da temporada será gerado
+                    automaticamente.</small>
+            </div>
+
+            <!-- Select manual -->
+            <div id="generoManual" style="display: none;">
+                <select id="genero" multiple>
+                    <option value="Ação">Ação</option>
+                    <option value="Artes Marciais">Artes Marciais</option>
+                    <option value="Aventura">Aventura</option>
+                    <option value="Comédia">Comédia</option>
+                    <option value="Demônios">Demônios</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Ecchi">Ecchi</option>
+                    <option value="Escolar">Escolar</option>
+                    <option value="Espacial">Espacial</option>
+                    <option value="Esportes">Esportes</option>
+                    <option value="Fantasia">Fantasia</option>
+                    <option value="Ficção Científica">Ficção Científica</option>
+                    <option value="Harém">Harém</option>
+                    <option value="Hentai">Hentai</option>
+                    <option value="Histórico">Histórico</option>
+                    <option value="Infantil">Infantil</option>
+                    <option value="Jogo">Jogo</option>
+                    <option value="Josei">Josei</option>
+                    <option value="Magia">Magia</option>
+                    <option value="Mecha">Mecha</option>
+                    <option value="Militar">Militar</option>
+                    <option value="Mistério">Mistério</option>
+                    <option value="Música">Música</option>
+                    <option value="Paródia">Paródia</option>
+                    <option value="Polícia">Polícia</option>
+                    <option value="Psicológico">Psicológico</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Samurai">Samurai</option>
+                    <option value="Seinen">Seinen</option>
+                    <option value="Shoujo">Shoujo</option>
+                    <option value="Shounen">Shounen</option>
+                    <option value="Slice of Life">Slice of Life</option>
+                    <option value="Sobrenatural">Sobrenatural</option>
+                    <option value="Super Poderes">Super Poderes</option>
+                    <option value="Suspense">Suspense</option>
+                    <option value="Terror">Terror</option>
+                    <option value="Vampiro">Vampiro</option>
+                </select>
+                <small>Segure Ctrl (ou Cmd no Mac) para selecionar múltiplos gêneros</small>
+            </div>
+
+            <!-- Select da API -->
+            <div id="generoApi">
+                <select id="animeApi" required></select>
+                <small id="apiHelp">Digite para pesquisar animes da API</small>
+            </div>
         </div>
-        
-        <!-- Select manual -->
-        <div id="generoManual" style="display: none;">
-            <select id="genero" multiple>
-                <option value="Ação">Ação</option>
-                <option value="Artes Marciais">Artes Marciais</option>
-                <option value="Aventura">Aventura</option>
-                <option value="Comédia">Comédia</option>
-                <option value="Demônios">Demônios</option>
-                <option value="Drama">Drama</option>
-                <option value="Ecchi">Ecchi</option>
-                <option value="Escolar">Escolar</option>
-                <option value="Espacial">Espacial</option>
-                <option value="Esportes">Esportes</option>
-                <option value="Fantasia">Fantasia</option>
-                <option value="Ficção Científica">Ficção Científica</option>
-                <option value="Harém">Harém</option>
-                <option value="Hentai">Hentai</option>
-                <option value="Histórico">Histórico</option>
-                <option value="Infantil">Infantil</option>
-                <option value="Jogo">Jogo</option>
-                <option value="Josei">Josei</option>
-                <option value="Magia">Magia</option>
-                <option value="Mecha">Mecha</option>
-                <option value="Militar">Militar</option>
-                <option value="Mistério">Mistério</option>
-                <option value="Música">Música</option>
-                <option value="Paródia">Paródia</option>
-                <option value="Polícia">Polícia</option>
-                <option value="Psicológico">Psicológico</option>
-                <option value="Romance">Romance</option>
-                <option value="Samurai">Samurai</option>
-                <option value="Seinen">Seinen</option>
-                <option value="Shoujo">Shoujo</option>
-                <option value="Shounen">Shounen</option>
-                <option value="Slice of Life">Slice of Life</option>
-                <option value="Sobrenatural">Sobrenatural</option>
-                <option value="Super Poderes">Super Poderes</option>
-                <option value="Suspense">Suspense</option>
-                <option value="Terror">Terror</option>
-                <option value="Vampiro">Vampiro</option>
-            </select><br>
-            <small>Segure Ctrl (ou Cmd no Mac) para selecionar múltiplos gêneros</small><br>
-        </div>
-        
-        <!-- Select da API -->
-        <div id="generoApi">
-            <select id="animeApi" required></select><br>
-            <small id="apiHelp">Digite para pesquisar animes da API</small><br>
-        </div>
+
+
         <button type="submit">Adicionar Anime</button>
         <button type="button" onclick="resetarFormulario()" id="reset">Reset</button>
     </form>

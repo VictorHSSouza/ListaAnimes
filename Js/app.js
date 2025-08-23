@@ -19,7 +19,9 @@ window.loginComGoogle = async () => {
 // Função de logout
 window.sair = async () => {
     await signOut(auth);
-    carregarAnimes();
+    if (typeof navigateTo !== 'undefined') {
+        navigateTo('index');
+    }
 };
 
 // Email autorizado (substitua pelo seu email)
@@ -69,21 +71,24 @@ function verificarAutenticacao() {
 onAuthStateChanged(auth, verificarAutenticacao);
 
 // Função para adicionar anime
-const animeForm = document.getElementById('animeForm');
-if (animeForm) {
-    animeForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+function inicializarFormulario() {
+    const animeForm = document.getElementById('animeForm');
+    if (animeForm && !animeForm.hasAttribute('data-listener-added')) {
+        animeForm.setAttribute('data-listener-added', 'true');
+        animeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        const tipoAdicao = document.querySelector('input[name="tipoAdicao"]:checked').value;
+            const tipoAdicao = document.querySelector('input[name="tipoAdicao"]:checked').value;
 
-        if (tipoAdicao === 'vincular') {
-            // Lógica para vincular temporada
-            await adicionarTemporada();
-        } else {
-            // Lógica para adicionar novo anime
-            await adicionarNovoAnime();
-        }
-    });
+            if (tipoAdicao === 'vincular') {
+                // Lógica para vincular temporada
+                await adicionarTemporada();
+            } else {
+                // Lógica para adicionar novo anime
+                await adicionarNovoAnime();
+            }
+        });
+    }
 }
 
 // Função para adicionar novo anime
@@ -102,20 +107,23 @@ async function adicionarNovoAnime() {
         const selectedOption = animeApiSelect.selectedOptions[0];
         if (selectedOption && selectedOption.dataset.anime) {
             const animeData = JSON.parse(selectedOption.dataset.anime);
-            const generosIngles = animeData.genres?.map(g => g.name) || [];
-            generos = traduzirGeneros(generosIngles);
+            generos = animeData.genres || [];
         }
     }
     const descricao = document.getElementById('descricao').value;
 
-    // Captura URL da imagem se for da API
+    // Captura URL da imagem, anime_slug e animeLink se for da API
     let imagemUrl = null;
+    let animeSlug = null;
+    let animeLink = null;
     if (tipoAdicao === 'api') {
         const animeApiSelect = document.getElementById('animeApi');
         const selectedOption = animeApiSelect.selectedOptions[0];
         if (selectedOption && selectedOption.dataset.anime) {
             const animeData = JSON.parse(selectedOption.dataset.anime);
-            imagemUrl = animeData.images?.jpg?.image_url || null;
+            imagemUrl = animeData.thumbnail || null;
+            animeSlug = animeData.slug || null;
+            animeLink = animeData.animeLink || null;
         }
     }
 
@@ -129,7 +137,9 @@ async function adicionarNovoAnime() {
             nota: nota,
             generos: generos,
             descricao: descricao,
-            imagem: imagemUrl
+            imagem: imagemUrl,
+            anime_slug: animeSlug,
+            animeLink: animeLink
         });
 
         resetarFormulario();
@@ -154,13 +164,17 @@ async function adicionarTemporada() {
         return;
     }
 
-    // Captura URL da imagem se selecionada da API
+    // Captura URL da imagem, anime_slug e animeLink se selecionada da API
     let imagemUrl = null;
+    let animeSlug = null;
+    let animeLink = null;
     const animeApiSelect = document.getElementById('animeApi');
     const selectedOption = animeApiSelect.selectedOptions[0];
     if (selectedOption && selectedOption.dataset.anime) {
         const animeData = JSON.parse(selectedOption.dataset.anime);
-        imagemUrl = animeData.images?.jpg?.image_url || null;
+        imagemUrl = animeData.thumbnail || null;
+        animeSlug = animeData.slug || null;
+        animeLink = animeData.animeLink || null;
     }
 
     try {
@@ -185,9 +199,15 @@ async function adicionarTemporada() {
             descricoes: [descricao]
         };
 
-        // Adiciona imagem se fornecida
+        // Adiciona imagem, anime_slug e animeLink se fornecidos
         if (imagemUrl) {
             novaTemporada.imagem = imagemUrl;
+        }
+        if (animeSlug) {
+            novaTemporada.anime_slug = animeSlug;
+        }
+        if (animeLink) {
+            novaTemporada.animeLink = animeLink;
         }
 
         temporadas.push(novaTemporada);
@@ -363,16 +383,16 @@ window.alterarTipoAdicao = () => {
     document.getElementById('animeExistente').required = false;
 
     if (tipoAdicao === 'manual') {
-        generoManual.style.display = 'block';
+        generoManual.style.display = 'flex';
         document.getElementById('genero').required = true;
     } else if (tipoAdicao === 'api') {
-        generoApi.style.display = 'block';
+        generoApi.style.display = 'flex';
         document.getElementById('animeApi').required = true;
         apiHelp.textContent = 'Digite para pesquisar animes da API';
         inicializarApiSelect();
     } else if (tipoAdicao === 'vincular') {
-        animeVinculado.style.display = 'block';
-        generoApi.style.display = 'block';
+        animeVinculado.style.display = 'flex';
+        generoApi.style.display = 'flex';
         document.getElementById('animeExistente').required = true;
         document.getElementById('animeApi').required = false;
         apiHelp.textContent = 'Opcional: Selecione para usar imagem da API';
@@ -391,16 +411,19 @@ function inicializarApiSelect() {
             placeholder: 'Digite o nome do anime para pesquisar...',
             allowClear: true,
             ajax: {
-                url: function (params) {
-                    return `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(params.term)}&limit=10`;
-                },
+                url: 'http://18.230.118.237/anime/search',
                 dataType: 'json',
                 delay: 300,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
                 processResults: function (data) {
                     return {
-                        results: data.data.map(anime => ({
-                            id: anime.mal_id,
-                            text: anime.title,
+                        results: data.result.map(anime => ({
+                            id: anime.animeName,
+                            text: anime.animeName,
                             anime: anime
                         }))
                     };
@@ -668,18 +691,33 @@ async function popularAnimesExistentes() {
     }
 }
 
+// Função para aplicar máscara no campo nota
+function aplicarMascaraNota() {
+    const notaInput = document.getElementById('nota');
+    if (notaInput) {
+        notaInput.addEventListener('input', function() {
+            let valor = parseFloat(this.value);
+            if (valor > 10) {
+                this.value = '10';
+            }
+        });
+    }
+}
+
 // Função de inicialização
 async function inicializar() {
     await carregarAnimes();
     inicializarBotaoComentarios();
     inicializarFiltros();
+    inicializarFormulario();
+    aplicarMascaraNota();
     // Verifica autenticação após carregar a página
     setTimeout(verificarAutenticacao, 200);
     // Mostra a página após tudo carregar
     setTimeout(() => {
-        console.log("This message appears after 2 seconds.");
-    }, 1000);
-    document.body.classList.add('loaded');
+        console.log("Carregando...");
+        document.body.classList.add('loaded');
+    }, 100);
 }
 
 // Executa inicialização quando DOM estiver pronto

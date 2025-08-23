@@ -1,20 +1,24 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDYjQHR5D9R6-NeI2F1rKHcE96awGqH6to",
-    authDomain: "listaanimes-ace11.firebaseapp.com",
-    projectId: "listaanimes-ace11",
-    storageBucket: "listaanimes-ace11.firebasestorage.app",
-    messagingSenderId: "670425575167",
-    appId: "1:670425575167:web:b19728f277cf78879966ca",
-    measurementId: "G-53EZCLPMZD"
-};
+// Usa instâncias globais do Firebase
+let db, auth;
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+// Aguarda Firebase estar disponível
+function aguardarFirebase() {
+    return new Promise((resolve) => {
+        const checkFirebase = () => {
+            if (window.db && window.auth) {
+                db = window.db;
+                auth = window.auth;
+                resolve();
+            } else {
+                setTimeout(checkFirebase, 100);
+            }
+        };
+        checkFirebase();
+    });
+}
 
 const EMAIL_AUTORIZADO = 'victorhenriquesantanasouza@gmail.com';
 
@@ -127,10 +131,14 @@ function inicializarBotaoComentarios() {
 }
 
 // Função de inicialização para outros
-function inicializar() {
+async function inicializar() {
+    await aguardarFirebase();
+    
     inicializarBotaoComentarios();
+    
     // Verifica autenticação e carrega dados
     const user = auth.currentUser;
+    
     if (user && user.email === EMAIL_AUTORIZADO) {
         carregarOutros();
     } else {
@@ -141,16 +149,18 @@ function inicializar() {
             }
         });
     }
-}
-
-// Executa inicialização quando DOM estiver pronto
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inicializar);
-} else {
-    setTimeout(inicializar, 100);
+    
+    // Mostra a página após tudo carregar
+    setTimeout(() => {
+        console.log("Carregando...");
+        document.body.classList.add('loaded');
+    }, 100);
 }
 
 // Exporta função para uso no SPA
 window.inicializarApp = inicializar;
 
-inicializarBotaoComentarios();
+// Inicializa apenas o botão se não for SPA
+if (!window.inicializarApp) {
+    inicializarBotaoComentarios();
+}
