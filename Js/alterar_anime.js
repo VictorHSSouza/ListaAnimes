@@ -43,7 +43,7 @@ const EMAIL_AUTORIZADO = 'victorhenriquesantanasouza@gmail.com';
 onAuthStateChanged(auth, (user) => {
     const loginForm = document.getElementById('loginForm');
     const adminPanel = document.getElementById('adminPanel');
-    
+
     if (user && user.email === EMAIL_AUTORIZADO) {
         loginForm.style.display = 'none';
         adminPanel.style.display = 'block';
@@ -64,22 +64,22 @@ async function carregarAnime() {
     const urlParams = window.routeParams || new URLSearchParams(window.location.search);
     const animeId = urlParams.get('id');
     const numeroTemporada = urlParams.get('temporada');
-    
+
     if (!animeId) {
         document.getElementById('status').innerHTML = '<div class="danger">❌ ID do anime não encontrado!</div>';
         return;
     }
-    
+
     // Armazena se é edição de temporada
     window.isTemporada = numeroTemporada !== null;
     window.numeroTemporada = numeroTemporada ? parseInt(numeroTemporada) : null;
-    
+
     try {
         // Tenta buscar na coleção "animes" primeiro
         let docRef = doc(db, "animes", animeId);
         let docSnap = await getDoc(docRef);
         let colecaoOriginal = "animes";
-        
+
         // Se não encontrar e usuário for autorizado, tenta na coleção "outros"
         if (!docSnap.exists()) {
             const user = auth.currentUser;
@@ -89,14 +89,14 @@ async function carregarAnime() {
                 colecaoOriginal = "outros";
             }
         }
-        
+
         if (docSnap.exists()) {
             const anime = docSnap.data();
             window.colecaoOriginal = colecaoOriginal;
             window.animeOriginal = anime;
-            
+
             let dadosParaEdicao = anime;
-            
+
             // Se for edição de temporada, busca dados da temporada
             if (window.isTemporada && anime.temporadas) {
                 const temporada = anime.temporadas.find(t => t.numero === window.numeroTemporada);
@@ -106,10 +106,10 @@ async function carregarAnime() {
                     document.querySelector('input[value="api"]').checked = true;
                     document.querySelector('input[value="manual"]').disabled = true;
                     alterarTipoGenero();
-                    
+
                     // Remove required do select da API para temporadas
                     document.getElementById('animeApi').required = false;
-                    
+
                     // Atualiza título
                     document.querySelector('h2').textContent = `Alterar ${window.numeroTemporada}ª Temporada - ${anime.nome}`;
                 } else {
@@ -117,18 +117,18 @@ async function carregarAnime() {
                     return;
                 }
             }
-            
+
             document.getElementById('animeId').value = animeId;
             document.getElementById('nome').value = dadosParaEdicao.nome || '';
             document.getElementById('nota').value = dadosParaEdicao.nota || '';
-            
+
             // Pega a descrição mais recente
             let descricaoAtual = dadosParaEdicao.descricao;
             if (dadosParaEdicao.descricoes && dadosParaEdicao.descricoes.length > 0) {
                 descricaoAtual = dadosParaEdicao.descricoes[dadosParaEdicao.descricoes.length - 1];
             }
             document.getElementById('descricao').value = descricaoAtual || '';
-            
+
             // Para temporadas, não seleciona gêneros (serão herdados do anime principal)
             if (!window.isTemporada) {
                 const generoSelect = document.getElementById('genero');
@@ -151,30 +151,30 @@ const alterarForm = document.getElementById('alterarForm');
 if (alterarForm) {
     alterarForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const animeId = document.getElementById('animeId').value;
         const nome = document.getElementById('nome').value;
         const notaValue = document.getElementById('nota').value;
         const nota = notaValue ? parseFloat(notaValue) : null;
         const descricao = document.getElementById('descricao').value;
-        
+
         try {
             const colecao = window.colecaoOriginal || "animes";
             const docRef = doc(db, colecao, animeId);
             const docSnap = await getDoc(docRef);
             const animeAtual = docSnap.data();
-            
+
             if (window.isTemporada) {
                 // Lógica para alterar temporada
                 const temporadas = [...animeAtual.temporadas];
                 const indexTemporada = temporadas.findIndex(t => t.numero === window.numeroTemporada);
-                
+
                 if (indexTemporada === -1) {
                     throw new Error('Temporada não encontrada!');
                 }
-                
+
                 const temporadaAtual = temporadas[indexTemporada];
-                
+
                 // Captura imagem, anime_slug e animeLink da API se selecionada
                 let imagemUrl = temporadaAtual.imagem;
                 let animeSlug = temporadaAtual.anime_slug;
@@ -187,12 +187,12 @@ if (alterarForm) {
                     animeSlug = animeData.slug || temporadaAtual.anime_slug;
                     animeLink = animeData.animeLink || temporadaAtual.animeLink;
                 }
-                
+
                 // Verifica se a descrição mudou
                 const descricoesExistentes = temporadaAtual.descricoes || [temporadaAtual.descricao].filter(Boolean);
                 const descricaoAtual = descricoesExistentes[descricoesExistentes.length - 1] || '';
                 const novasDescricoes = descricao !== descricaoAtual ? [...descricoesExistentes, descricao] : descricoesExistentes;
-                
+
                 // Atualiza temporada
                 const novaTemporadaData = {
                     ...temporadaAtual,
@@ -202,25 +202,29 @@ if (alterarForm) {
                     descricoes: novasDescricoes,
                     imagem: imagemUrl
                 };
-                
+
                 if (animeSlug !== undefined && animeSlug !== null) {
                     novaTemporadaData.anime_slug = animeSlug;
                 }
                 if (animeLink !== undefined && animeLink !== null) {
                     novaTemporadaData.animeLink = animeLink;
                 }
-                
+
                 temporadas[indexTemporada] = novaTemporadaData;
-                
+
                 await updateDoc(docRef, {
                     temporadas: temporadas
                 });
-                
+
                 document.getElementById('status').innerHTML = '<div class="success">✅ Temporada alterada com sucesso!</div>';
                 setTimeout(() => {
-                    window.location.href = `detalhes.html?id=${animeId}`;
+                    if (typeof navigateTo !== 'undefined') {
+                        navigateTo(`detalhes?id=${animeId}`);
+                    } else {
+                        window.location.href = `detalhes.html?id=${animeId}`;
+                    }
                 }, 1500);
-                
+
             } else {
                 // Lógica original para alterar anime
                 const tipoGenero = document.querySelector('input[name="generoTipo"]:checked').value;
@@ -228,7 +232,7 @@ if (alterarForm) {
                 let imagemUrl = null;
                 let animeSlug = null;
                 let animeLink = null;
-                
+
                 if (tipoGenero === 'manual') {
                     const generoSelect = document.getElementById('genero');
                     generos = Array.from(generoSelect.selectedOptions).map(option => option.value);
@@ -246,11 +250,11 @@ if (alterarForm) {
                         animeLink = animeData.animeLink || animeAtual.animeLink;
                     }
                 }
-                
+
                 const descricoesExistentes = animeAtual.descricoes || [animeAtual.descricao].filter(Boolean);
                 const descricaoAtual = descricoesExistentes[descricoesExistentes.length - 1] || '';
                 const novasDescricoes = descricao !== descricaoAtual ? [...descricoesExistentes, descricao] : descricoesExistentes;
-                
+
                 const updateData = {
                     nome: nome,
                     nota: nota,
@@ -259,22 +263,22 @@ if (alterarForm) {
                     descricao: descricao,
                     imagem: imagemUrl
                 };
-                
+
                 if (animeSlug !== undefined && animeSlug !== null) {
                     updateData.anime_slug = animeSlug;
                 }
                 if (animeLink !== undefined && animeLink !== null) {
                     updateData.animeLink = animeLink;
                 }
-                
+
                 await updateDoc(docRef, updateData);
-                
+
                 document.getElementById('status').innerHTML = '<div class="success">✅ Anime alterado com sucesso!</div>';
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1500);
             }
-            
+
         } catch (error) {
             document.getElementById('status').innerHTML = `<div class="danger">❌ Erro: ${error.message}</div>`;
         }
@@ -286,7 +290,7 @@ window.alterarTipoGenero = () => {
     const tipoGenero = document.querySelector('input[name="generoTipo"]:checked').value;
     const generoManual = document.getElementById('generoManual');
     const generoApi = document.getElementById('generoApi');
-    
+
     if (tipoGenero === 'manual') {
         generoManual.style.display = 'block';
         generoApi.style.display = 'none';
@@ -330,7 +334,14 @@ function inicializarApiSelect() {
             minimumInputLength: 2,
             templateResult: function (anime) {
                 if (anime.loading) return anime.text;
-                return $(`<div>${anime.text}</div>`);
+                if (!anime.anime) return $(`<div>${anime.text}</div>`);
+                
+                return $(`
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${anime.anime.thumbnail}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'">
+                        <div>${anime.text}</div>
+                    </div>
+                `);
             },
             templateSelection: function (anime) {
                 if (anime.anime) {
@@ -387,7 +398,7 @@ function traduzirGeneros(generosIngles) {
         'Ecchi': 'Ecchi',
         'Hentai': 'Hentai'
     };
-    
+
     return generosIngles.map(genero => traducoes[genero] || genero);
 }
 
@@ -401,7 +412,7 @@ window.resetarFormulario = () => {
 function aplicarMascaraNota() {
     const notaInput = document.getElementById('nota');
     if (notaInput) {
-        notaInput.addEventListener('input', function() {
+        notaInput.addEventListener('input', function () {
             let valor = parseFloat(this.value);
             if (valor > 10) {
                 this.value = '10';
@@ -414,7 +425,7 @@ function aplicarMascaraNota() {
 async function inicializar() {
     await carregarAnime();
     aplicarMascaraNota();
-    
+
     // Mostra a página após tudo carregar
     setTimeout(() => {
         console.log("Carregando...");

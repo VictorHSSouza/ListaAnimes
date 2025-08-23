@@ -618,14 +618,37 @@ textarea {
     max-width: 200px;
     width: 100% !important;
     height: fit-content;
+    margin-right: 8px;
 }
 
 .btn-alterar-detalhes:hover {
     background: #0056b3 !important;
 }
 
+.btn-assistir-detalhes {
+    background: #28a745 !important;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 12px;
+    cursor: pointer;
+    align-self: flex-end;
+    max-width: 200px;
+    width: 100% !important;
+    height: fit-content;
+    margin-right: 8px;
+    position: absolute;
+    top: 45px;
+}
+
+.btn-assistir-detalhes:hover {
+    background: #218838 !important;
+}
+
 .divAlterar{
         width: 30%;
+        position: relative;
     }
 
 .anime-image-detalhes {
@@ -1034,11 +1057,17 @@ textarea {
     
     .btn-alterar-detalhes {
         width: 100% !important;
-        margin-bottom: 15px !important;
+        padding: 10px 10% !important;
+        margin-top: 0 !important;
+    }
+
+    .btn-assistir-detalhes{
+        top: 35px !important;
+        width: 100% !important;
         padding: 10px 10% !important;
     }
 
     .divAlterar{
-        width: 40%;
+        width: 50% !important;
     }
 }

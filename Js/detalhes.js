@@ -127,14 +127,24 @@ function exibirDetalhes(anime, temporada = null) {
     const urlParams = new URLSearchParams(window.location.search);
     const animeId = urlParams.get('id');
     
-    let botaoAlterar = '';
+    let botoesAdmin = '';
     if (isAuthorized) {
         const animeIdCorreto = obterIdDaUrl();
+        let botaoAlterar = '';
+        let botaoAssistir = '';
+        
         if (isTemporada) {
             botaoAlterar = `<button onclick="alterarTemporada('${animeIdCorreto}', ${temporada.numero})" class="btn-alterar-detalhes">Alterar</button>`;
         } else {
             botaoAlterar = `<button onclick="alterarAnimeDetalhes('${animeIdCorreto}')" class="btn-alterar-detalhes">Alterar</button>`;
         }
+        
+        // Adiciona botão Assistir se houver anime_slug
+        if (anime.anime_slug) {
+            botaoAssistir = `<button onclick="window.open('http://18.230.118.237/assistir?anime=${anime.anime_slug}', '_blank')" class="btn-assistir-detalhes">Assistir</button>`;
+        }
+        
+        botoesAdmin = botaoAlterar + botaoAssistir;
     }
     
     const detalhesHtml = `
@@ -143,7 +153,7 @@ function exibirDetalhes(anime, temporada = null) {
             <div class="anime-detalhes-content">
                 <div class="anime-detalhes-titulo">
                     <div><h2>${titulo}</h2></div>
-                    <div class="divAlterar">${botaoAlterar}</div>
+                    <div class="divAlterar">${botoesAdmin}</div>
                 </div>
                 <div class="detalhes-info">
                     <p><strong>Nota:</strong> ${nota}</p>

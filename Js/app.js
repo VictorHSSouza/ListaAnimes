@@ -433,7 +433,14 @@ function inicializarApiSelect() {
             minimumInputLength: 2,
             templateResult: function (anime) {
                 if (anime.loading) return anime.text;
-                return $(`<div>${anime.text}</div>`);
+                if (!anime.anime) return $(`<div>${anime.text}</div>`);
+                
+                return $(`
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${anime.anime.thumbnail}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'">
+                        <div>${anime.text}</div>
+                    </div>
+                `);
             },
             templateSelection: function (anime) {
                 if (anime.anime) {
