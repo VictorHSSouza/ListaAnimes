@@ -100,12 +100,12 @@ class Router {
         
         // Carrega novo script
         const scriptMap = {
-            '': 'Js/app.js',
-            'index': 'Js/app.js',
-            'gerenciar': 'Js/app.js',
-            'alterar': 'Js/alterar_anime.js',
-            'detalhes': 'Js/detalhes.js',
-            'outros': 'Js/outros.js'
+            '': 'js/app.js',
+            'index': 'js/app.js',
+            'gerenciar': 'js/app.js',
+            'alterar': 'js/alterar_anime.js',
+            'detalhes': 'js/detalhes.js',
+            'outros': 'js/outros.js'
         };
         
         const scriptSrc = scriptMap[path];
