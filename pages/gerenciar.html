@@ -25,7 +25,9 @@
         <!-- Opções de tipo -->
         <div id="opcoes">
             <label><input type="radio" name="tipoAdicao" value="api" checked onchange="alterarTipoAdicao()"> Buscar
-                anime da API</label><br>
+                anime da API AnFire</label><br>
+            <label><input type="radio" name="tipoAdicao" value="jikan" onchange="alterarTipoAdicao()"> Buscar
+                anime da API Jikan</label><br>
             <label><input type="radio" name="tipoAdicao" value="manual" onchange="alterarTipoAdicao()"> Selecionar
                 gêneros manualmente</label><br>
             <label><input type="radio" name="tipoAdicao" value="vincular" onchange="alterarTipoAdicao()"> Vincular anime
@@ -40,6 +42,13 @@
                 </select>
                 <small >Selecione um anime já cadastrado no banco. O número da temporada será gerado
                     automaticamente.</small>
+                    
+                <!-- Opções de API para vincular -->
+                <div id="opcoesVincular">
+                    <label><input type="radio" name="apiVincular" value="nenhuma" checked onchange="alterarApiVincular()"> Não usar API</label>
+                    <label><input type="radio" name="apiVincular" value="anfire" onchange="alterarApiVincular()"> Usar API AnFire</label>
+                    <label><input type="radio" name="apiVincular" value="jikan" onchange="alterarApiVincular()"> Usar API Jikan</label>
+                </div>
             </div>
 
             <!-- Select manual -->
@@ -86,10 +95,16 @@
                 <small>Segure Ctrl (ou Cmd no Mac) para selecionar múltiplos gêneros</small>
             </div>
 
-            <!-- Select da API -->
+            <!-- Select da API AnFire -->
             <div id="generoApi">
                 <select id="animeApi" required></select>
-                <small id="apiHelp">Digite para pesquisar animes da API</small>
+                <small id="apiHelp">Digite para pesquisar animes da API AnFire</small>
+            </div>
+            
+            <!-- Select da API Jikan -->
+            <div id="generoJikan" style="display: none;">
+                <select id="animeJikan" required></select>
+                <small id="jikanHelp">Digite para pesquisar animes da API Jikan (MyAnimeList)</small>
             </div>
         </div>
 

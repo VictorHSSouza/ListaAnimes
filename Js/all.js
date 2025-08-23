@@ -28,6 +28,15 @@ window.toggleDropdown = () => {
     dropdown.classList.toggle('active');
 };
 
+// Função para confirmar logout
+window.confirmarSair = () => {
+    if (confirm('Tem certeza que deseja sair?')) {
+        if (typeof sair !== 'undefined') {
+            sair();
+        }
+    }
+};
+
 // Fecha dropdown ao clicar fora
 document.addEventListener('click', (event) => {
     const dropdown = document.querySelector('.dropdown');
@@ -37,10 +46,11 @@ document.addEventListener('click', (event) => {
 });
 
 onAuthStateChanged(auth, (user) => {
-    const outrosBtns = document.querySelectorAll('.admin-only');
+    const adminBtns = document.querySelectorAll('.admin-only');
     const loginBtns = document.querySelectorAll('.login-only');
+    const logoutBtns = document.querySelectorAll('.logout-only');
     
-    outrosBtns.forEach(btn => {
+    adminBtns.forEach(btn => {
         if (user && user.email === 'victorhenriquesantanasouza@gmail.com') {
             btn.style.display = 'block';
         } else {
@@ -50,6 +60,14 @@ onAuthStateChanged(auth, (user) => {
     
     loginBtns.forEach(btn => {
         if (!user) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+    });
+    
+    logoutBtns.forEach(btn => {
+        if (user) {
             btn.style.display = 'block';
         } else {
             btn.style.display = 'none';

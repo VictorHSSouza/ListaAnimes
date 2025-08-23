@@ -52,6 +52,13 @@ class Router {
     async loadRoute() {
         const fullHash = window.location.hash.slice(1) || '';
         const [path, params] = fullHash.split('?');
+        
+        // Se a rota não existe, redireciona para index
+        if (path && !this.routes[path]) {
+            this.navigate('index');
+            return;
+        }
+        
         const route = this.routes[path] || this.routes[''];
         
         // Verifica se é página protegida

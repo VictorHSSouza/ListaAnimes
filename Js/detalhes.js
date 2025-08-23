@@ -140,8 +140,15 @@ function exibirDetalhes(anime, temporada = null) {
         }
         
         // Adiciona botão Assistir se houver anime_slug
-        if (anime.anime_slug) {
-            botaoAssistir = `<button onclick="window.open('http://18.230.118.237/assistir?anime=${anime.anime_slug}', '_blank')" class="btn-assistir-detalhes">Assistir</button>`;
+        let slugParaAssistir = anime.anime_slug;
+        
+        // Se estiver visualizando temporada e ela tiver slug, usar o da temporada
+        if (isTemporada && temporada.anime_slug) {
+            slugParaAssistir = temporada.anime_slug;
+        }
+        
+        if (slugParaAssistir) {
+            botaoAssistir = `<button onclick="window.open('http://18.230.118.237/assistir?anime=${slugParaAssistir}', '_blank')" class="btn-assistir-detalhes">Assistir</button>`;
         }
         
         botoesAdmin = botaoAlterar + botaoAssistir;

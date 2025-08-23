@@ -26,7 +26,8 @@
         <!-- Opções de gênero -->
         <div id="opcoes">
             <label><input type="radio" name="generoTipo" value="manual" checked onchange="alterarTipoGenero()"> Selecionar gêneros manualmente</label><br>
-            <label><input type="radio" name="generoTipo" value="api" onchange="alterarTipoGenero()"> Buscar anime da API</label>
+            <label><input type="radio" name="generoTipo" value="api" onchange="alterarTipoGenero()"> Buscar anime da API AnFire</label><br>
+            <label><input type="radio" name="generoTipo" value="jikan" onchange="alterarTipoGenero()"> Buscar anime da API Jikan</label>
         </div>
         
         <!-- Select manual -->
@@ -73,10 +74,16 @@
             <small>Segure Ctrl (ou Cmd no Mac) para selecionar múltiplos gêneros</small><br>
         </div>
         
-        <!-- Select da API -->
+        <!-- Select da API AnFire -->
         <div id="generoApi" style="display: none;">
             <select id="animeApi"></select><br>
-            <small>Digite para pesquisar animes da API</small><br>
+            <small>Digite para pesquisar animes da API AnFire</small><br>
+        </div>
+        
+        <!-- Select da API Jikan -->
+        <div id="generoJikan" style="display: none;">
+            <select id="animeJikan"></select><br>
+            <small>Digite para pesquisar animes da API Jikan (MyAnimeList)</small><br>
         </div>
 
         <button type="submit">Salvar Alterações</button>

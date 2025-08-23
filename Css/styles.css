@@ -21,7 +21,7 @@
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
     position: sticky !important;
     z-index: 1000 !important;
     top: 0 !important;
@@ -43,7 +43,7 @@ body.loaded {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     position: sticky;
     z-index: 1000;
     top: 0;
@@ -61,10 +61,10 @@ body.loaded {
     margin: 0;
     font-size: 36px;
     font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.navbar-brand img{
+.navbar-brand img {
     width: 100px;
 }
 
@@ -89,14 +89,14 @@ body.loaded {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .nav-link:hover {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .dropdown {
@@ -105,9 +105,9 @@ body.loaded {
 }
 
 .dropdown-btn {
-    background: rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.15);
     color: white;
-    border: 1px solid rgba(255,255,255,0.4);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
@@ -116,13 +116,13 @@ body.loaded {
     transition: all 0.3s ease;
     width: auto;
     margin: 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-btn:hover {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.25);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .dropdown-content {
@@ -131,7 +131,7 @@ body.loaded {
     right: 0;
     background-color: white;
     min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     z-index: 1001;
     overflow: hidden;
@@ -287,21 +287,32 @@ select {
     margin-bottom: 10px;
 }
 
-#opcoes input {
+#opcoes input,
+#opcoesVincular input {
     width: fit-content;
 }
 
-#divOpcoes div{
+#divOpcoes {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 7px;
+    margin-bottom: 10px;
+}
+
+#divOpcoes div {
     display: flex;
     flex-direction: column;
 }
 
 #animeVinculado {
-    margin-bottom: 10px;
+    margin-left: 5px;
 }
 
 #animeExistente {
+    padding: 7.2px;
     width: 600px;
+    margin-left: 0;
     margin-top: 0 !important;
 }
 
@@ -314,7 +325,16 @@ select[multiple] {
     width: 100%;
 }
 
+#generoJikan {
+    margin-left: 5px;
+    width: 100%
+}
+
 #animeApi {
+    width: 600px;
+}
+
+#animeJikan {
     width: 600px;
 }
 
@@ -402,7 +422,7 @@ button:not(.select2-selection__clear):hover {
     background: #005a87;
 }
 
-#adicionar{
+#adicionar {
     margin-top: 0 !important;
     width: 180px !important;
 }
@@ -478,7 +498,7 @@ button:not(.select2-selection__clear):hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     z-index: 1 !important;
 }
 
@@ -646,10 +666,10 @@ textarea {
     background: #218838 !important;
 }
 
-.divAlterar{
-        width: 30%;
-        position: relative;
-    }
+.divAlterar {
+    width: 30%;
+    position: relative;
+}
 
 .anime-image-detalhes {
     width: 400px;
@@ -759,7 +779,7 @@ textarea {
     .dropdown {
         display: none;
     }
-    
+
     .navbar-desktop {
         display: flex;
     }
@@ -769,29 +789,29 @@ textarea {
     .navbar-desktop {
         display: none;
     }
-    
+
     .dropdown {
         display: inline-block;
     }
-    
+
     .navbar {
         gap: 10px;
         padding: 15px;
     }
-    
-    .navbar-brand{
+
+    .navbar-brand {
         gap: 10px;
     }
-    
+
     .navbar-brand h1 {
         font-size: 24px;
     }
-    
+
     .navbar-menu {
         display: flex;
         justify-content: center;
     }
-    
+
     .dropdown-btn {
         width: 50px;
         height: 50px;
@@ -803,12 +823,12 @@ textarea {
         justify-content: center;
         border-radius: 8px;
     }
-    
+
     .dropdown-content {
         right: 0;
         width: 200px;
     }
-    
+
     #app-content {
         margin: 10px;
     }
@@ -944,11 +964,11 @@ textarea {
         width: 100% !important;
     }
 
-    #adicionar{
+    #adicionar {
         margin: 0;
         width: 100% !important;
     }
-    
+
     #btnOutros {
         width: 100% !important;
         margin-right: 0 !important;
@@ -966,12 +986,24 @@ textarea {
         margin-left: 1px;
     }
 
+    #opcoesVincular {
+        margin-left: 2px;
+    }
+
     #animeExistente {
         width: 100% !important;
     }
 
     #generoApi {
         margin-left: 0;
+    }
+
+    #generoJikan {
+        margin-left: 0;
+    }
+
+    #animeVinculado {
+         margin-left: 0;
     }
 
     small {
@@ -997,7 +1029,7 @@ textarea {
         width: 100% !important;
         margin-right: 0 !important;
     }
-    
+
     .logout-btn {
         width: 100% !important;
     }
@@ -1054,20 +1086,20 @@ textarea {
     .btn-voltar {
         width: 100% !important;
     }
-    
+
     .btn-alterar-detalhes {
         width: 100% !important;
         padding: 10px 10% !important;
         margin-top: 0 !important;
     }
 
-    .btn-assistir-detalhes{
+    .btn-assistir-detalhes {
         top: 35px !important;
         width: 100% !important;
         padding: 10px 10% !important;
     }
 
-    .divAlterar{
+    .divAlterar {
         width: 50% !important;
     }
 }
