@@ -1,0 +1,74 @@
+<h1>📊 Estatísticas</h1>
+<div class="botoes-topo">
+    <button onclick="window.goBack ? window.goBack() : navigateTo('index')" id="adicionar">← Voltar</button>
+</div>
+<div id="loading" class="loading">Carregando...</div>
+
+<div id="estatisticas-content">
+    <div class="stats-grid">
+        <div id="stat-left" class="stat-ponta">
+            <div class="stat-card">
+                <h3>Total de Animes</h3>
+                <div id="total-animes" class="stat-number">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Nota Média</h3>
+                <div id="nota-media" class="stat-number">-</div>
+            </div>
+        </div>
+
+        <div id="stat-right" class="stat-ponta">
+            <div class="stat-card">
+                <h3>Gênero Mais Comum</h3>
+                <div id="genero-comum" class="stat-text">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Animes com Nota 10</h3>
+                <div id="nota-dez" class="stat-number">-</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Gráfico de Notas por Anime -->
+    <div class="chart-container">
+        <div class="chart-titulo">
+            <h2>📈 Notas por Anime</h2>
+            <div class="chart-ordena">
+                <h5>Ordenar por nota</h5>
+                <input type="checkbox" id="ordenarPorNota" class="chart-check" onchange="atualizarGraficos()">
+            </div>
+        </div>
+        <div class="chart-wrapper">
+            <canvas id="notasChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico de Média por Gênero -->
+    <div class="chart-container">
+        <div class="chart-titulo">
+            <h2>📊 Média de Notas por Gênero</h2>
+            <div class="chart-ordena">
+                <h5>Ordenar por média</h5>
+                <input type="checkbox" id="ordenarGenerosPorMedia" class="chart-check" checked onchange="atualizarGraficos()">
+            </div>
+        </div>
+        <div class="chart-wrapper">
+            <canvas id="generosChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Gráfico de Quantidade por Gênero -->
+    <div class="chart-container">
+        <div class="chart-titulo">
+            <h2>📈 Quantidade de Animes por Gênero</h2>
+            <div class="chart-ordena">
+                <h5>Ordenar por quantidade</h5>
+                <input type="checkbox" id="ordenarQuantidadePorTotal" class="chart-check" checked onchange="atualizarGraficos()">
+            </div>
+        </div>
+        <div class="chart-wrapper">
+            <canvas id="quantidadeChart"></canvas>
+        </div>
+    </div>
+</div>

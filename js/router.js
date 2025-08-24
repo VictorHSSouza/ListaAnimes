@@ -7,7 +7,8 @@ class Router {
             'gerenciar': 'pages/gerenciar.html',
             'alterar': 'pages/alterar.html',
             'detalhes': 'pages/detalhes.html',
-            'outros': 'pages/outros.html'
+            'outros': 'pages/outros.html',
+            'estatisticas': 'pages/estatisticas.html'
         };
         
         this.history = [];
@@ -105,7 +106,8 @@ class Router {
             'gerenciar': 'js/app.js',
             'alterar': 'js/alterar_anime.js',
             'detalhes': 'js/detalhes.js',
-            'outros': 'js/outros.js'
+            'outros': 'js/outros.js',
+            'estatisticas': 'js/estatisticas.js'
         };
         
         const scriptSrc = scriptMap[path];
@@ -130,7 +132,8 @@ class Router {
             'gerenciar': 'Gerenciar Animes',
             'alterar': 'Alterar Anime',
             'detalhes': 'Detalhes do Anime',
-            'outros': 'Outros - Lista de Animes'
+            'outros': 'Outros - Lista de Animes',
+            'estatisticas': 'Estatísticas - Lista de Animes'
         };
         
         document.getElementById('page-title').textContent = titles[path] || 'Lista de Animes';
