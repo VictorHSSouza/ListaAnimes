@@ -1,0 +1,34 @@
+<h1>Gerenciar Personagens</h1>
+
+<!-- Login -->
+<div id="loginForm" class="form-container">
+    <h2>Login do Administrador</h2>
+    <button onclick="loginComGoogle()" class="google-btn">
+        <span>🔑</span> Entrar com Google
+    </button>
+    <div id="loginStatus"></div>
+</div>
+
+<!-- Formulário para adicionar personagem -->
+<div id="adminPanel" class="form-container" style="display: none;">
+    <div class="admin-header">
+        <h2>Adicionar Novo Personagem</h2>
+        <div>
+            <button onclick="sair(); return false" class="logout-btn">Sair</button>
+        </div>
+    </div>
+    <form id="personagemForm">
+        <input type="text" id="nome" placeholder="Nome do personagem" required><br>
+        <input type="text" id="anime" placeholder="Anime de origem" required><br>
+        <textarea id="descricao" placeholder="Descrição do personagem" rows="3" required></textarea><br>
+
+        <button type="submit">Adicionar Personagem</button>
+        <button type="button" onclick="resetarFormulario()" id="reset">Reset</button>
+    </form>
+    <div id="status"></div>
+</div>
+
+<!-- Lista de personagens -->
+<h2>Lista de Personagens</h2>
+<div id="loading" class="loading">Carregando...</div>
+<div id="personagens"></div>

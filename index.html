@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Lista de Animes</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/styles.css?v=1.8">
+    <link rel="stylesheet" href="css/styles.css?v=1.1">
     <link rel="stylesheet" href="css/bootstrap-utils.css">
     <!-- Bootstrap CSS local do node_modules -->
     <!-- <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
@@ -23,19 +23,31 @@
                 <a href="#" onclick="navigateTo('index'); return false;" class="nav-link"><span>🏠</span> Home</a>
                 <a href="#" onclick="navigateTo('estatisticas'); return false;" class="nav-link"><span>📊</span> Estatísticas</a>
                 <a href="#" onclick="loginComGoogle(); return false;" class="nav-link login-only" style="display: none;"><span>🔑</span> Login</a>
-                <a href="#" onclick="navigateTo('gerenciar'); return false;" class="nav-link admin-only" style="display: none;"><span>➕</span> Gerenciar</a>
+                <div class="dropdown admin-only" style="display: none;">
+                    <button class="nav-link" onclick="toggleGerenciarDropdown(event)"><span>➕</span> Gerenciar ▼</button>
+                    <div class="dropdown-content" id="gerenciar-dropdown">
+                        <a href="#" onclick="navigateTo('gerenciar_animes'); return false;"><span>📺</span> Animes</a>
+                        <a href="#" onclick="navigateTo('gerenciar_personagens'); return false;"><span>👥</span> Personagens</a>
+                    </div>
+                </div>
                 <a href="#" onclick="navigateTo('outros'); return false;" class="nav-link admin-only" style="display: none;"><span>🔞</span> Outros</a>
                 <a href="#" onclick="confirmarSair(); return false;" class="nav-link logout-only" style="display: none;"><span>🚪</span> Sair</a>
             </div>
             
             <!-- Menu Mobile (Dropdown) -->
-            <div class="dropdown">
+            <div class="dropdown mobile-dropdown">
                 <button class="dropdown-btn" onclick="toggleDropdown()">☰</button>
                 <div class="dropdown-content" id="dropdown-content">
                     <a href="#" onclick="navigateTo('index'); return false;"><span>🏠</span> Home</a>
                     <a href="#" onclick="navigateTo('estatisticas'); return false;"><span>📊</span> Estatísticas</a>
                     <a href="#" onclick="loginComGoogle(); return false;" class="login-only" style="display: none;"><span>🔑</span> Login</a>
-                    <a href="#" onclick="navigateTo('gerenciar'); return false;" class="admin-only" style="display: none;"><span>➕</span> Gerenciar</a>
+                    <div class="mobile-submenu admin-only" style="display: none;">
+                        <a href="#" onclick="toggleMobileSubmenu(event)" class="submenu-toggle"><span>➕</span> Gerenciar ▼</a>
+                        <div class="submenu-content" id="mobile-gerenciar-submenu">
+                            <a href="#" onclick="navigateTo('gerenciar_animes'); return false;"><span>📺</span> Animes</a>
+                            <a href="#" onclick="navigateTo('gerenciar_personagens'); return false;"><span>👥</span> Personagens</a>
+                        </div>
+                    </div>
                     <a href="#" onclick="navigateTo('outros'); return false;" class="admin-only" style="display: none;"><span>🔞</span> Outros</a>
                     <a href="#" onclick="confirmarSair(); return false;" class="logout-only" style="display: none;"><span>🚪</span> Sair</a>
                 </div>
@@ -50,7 +62,7 @@
     <!-- <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="js/router.js?id=012"></script>
-    <script type="module" src="js/all.js?id=012"></script>
+    <script type="module" src="js/router.js?id=4"></script>
+    <script type="module" src="js/all.js?id=4"></script>
 </body>
 </html>

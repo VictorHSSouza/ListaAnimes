@@ -24,8 +24,45 @@ window.db = db; // Para uso nos outros scripts
 
 // Função para controlar dropdown
 window.toggleDropdown = () => {
-    const dropdown = document.querySelector('.dropdown');
+    const dropdown = document.querySelector('.mobile-dropdown');
     dropdown.classList.toggle('active');
+};
+
+// Função para controlar dropdown de Gerenciar
+window.toggleGerenciarDropdown = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const dropdown = event.target.closest('.dropdown');
+    dropdown.classList.toggle('active');
+};
+
+// Função para controlar sub-menu mobile
+window.toggleMobileSubmenu = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const submenu = document.getElementById('mobile-gerenciar-submenu');
+    submenu.classList.toggle('active');
+};
+
+// Função para fechar todos os dropdowns
+window.closeAllDropdowns = () => {
+    // Fecha dropdown mobile
+    const mobileDropdown = document.querySelector('.mobile-dropdown');
+    if (mobileDropdown) {
+        mobileDropdown.classList.remove('active');
+    }
+    
+    // Fecha sub-menu mobile
+    const mobileSubmenu = document.getElementById('mobile-gerenciar-submenu');
+    if (mobileSubmenu) {
+        mobileSubmenu.classList.remove('active');
+    }
+    
+    // Fecha dropdown de Gerenciar (desktop)
+    const desktopDropdown = document.querySelector('.navbar-desktop .dropdown');
+    if (desktopDropdown) {
+        desktopDropdown.classList.remove('active');
+    }
 };
 
 // Função para confirmar logout
@@ -39,9 +76,22 @@ window.confirmarSair = () => {
 
 // Fecha dropdown ao clicar fora
 document.addEventListener('click', (event) => {
-    const dropdown = document.querySelector('.dropdown');
-    if (!dropdown.contains(event.target)) {
-        dropdown.classList.remove('active');
+    // Dropdown mobile
+    const mobileDropdown = document.querySelector('.mobile-dropdown');
+    if (mobileDropdown && !mobileDropdown.contains(event.target)) {
+        mobileDropdown.classList.remove('active');
+        // Fecha sub-menu também
+        const mobileSubmenu = document.getElementById('mobile-gerenciar-submenu');
+        if (mobileSubmenu) {
+            mobileSubmenu.classList.remove('active');
+        }
+    }
+    
+    // Dropdown de Gerenciar (desktop)
+    const desktopDropdown = document.querySelector('.navbar-desktop .dropdown');
+    const gerenciarContainer = event.target.closest('.navbar-desktop .dropdown');
+    if (desktopDropdown && !gerenciarContainer) {
+        desktopDropdown.classList.remove('active');
     }
 });
 

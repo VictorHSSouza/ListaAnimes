@@ -4,7 +4,9 @@ class Router {
         this.routes = {
             '': 'pages/home.html',
             'index': 'pages/home.html',
-            'gerenciar': 'pages/gerenciar.html',
+            'gerenciar': 'pages/gerenciar_animes.html',
+            'gerenciar_animes': 'pages/gerenciar_animes.html',
+            'gerenciar_personagens': 'pages/gerenciar_personagens.html',
             'alterar': 'pages/alterar.html',
             'detalhes': 'pages/detalhes.html',
             'outros': 'pages/outros.html',
@@ -63,7 +65,7 @@ class Router {
         const route = this.routes[path] || this.routes[''];
         
         // Verifica se é página protegida
-        if (path === 'outros' || path === 'alterar' || path === 'gerenciar') {
+        if (path === 'outros' || path === 'alterar' || path === 'gerenciar' || path === 'gerenciar_animes' || path === 'gerenciar_personagens') {
             const isAuthorized = await this.checkAuth();
             if (!isAuthorized) {
                 // Redireciona para home se não autorizado
@@ -104,6 +106,8 @@ class Router {
             '': 'js/app.js',
             'index': 'js/app.js',
             'gerenciar': 'js/app.js',
+            'gerenciar_animes': 'js/app.js',
+            'gerenciar_personagens': 'js/gerenciar_personagens.js',
             'alterar': 'js/alterar_anime.js',
             'detalhes': 'js/detalhes.js',
             'outros': 'js/outros.js',
@@ -130,6 +134,8 @@ class Router {
             '': 'Lista de Animes',
             'index': 'Lista de Animes',
             'gerenciar': 'Gerenciar Animes',
+            'gerenciar_animes': 'Gerenciar Animes',
+            'gerenciar_personagens': 'Gerenciar Personagens',
             'alterar': 'Alterar Anime',
             'detalhes': 'Detalhes do Anime',
             'outros': 'Outros - Lista de Animes',
@@ -159,12 +165,14 @@ class Router {
     }
 }
 
+// Inicializa o roteador
+const router = new Router();
+
 // Funções globais para navegação
 window.navigateTo = (path) => {
-    // Fecha dropdown antes de navegar
-    const dropdown = document.querySelector('.dropdown');
-    if (dropdown) {
-        dropdown.classList.remove('active');
+    // Fecha todos os dropdowns antes de navegar
+    if (window.closeAllDropdowns) {
+        window.closeAllDropdowns();
     }
     router.navigate(path);
 };
@@ -173,5 +181,5 @@ window.goBack = () => {
     router.goBack();
 };
 
-// Inicializa o roteador
-const router = new Router();
+// Exporta router para uso global
+window.router = router;
