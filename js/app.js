@@ -46,8 +46,11 @@ function verificarAutenticacao() {
         if (adminHeader) {
             adminHeader.innerHTML = `Bem-vindo, ${user.displayName}! - Adicionar Novo Anime`;
         }
-        // Inicializa API select por padrão
-        setTimeout(inicializarApiSelect, 100);
+        // Inicializa API selects por padrão
+        setTimeout(() => {
+            inicializarJikanSelect();
+            inicializarApiSelect();
+        }, 100);
 
     } else if (user) {
         // Usuário logado mas não autorizado
@@ -98,47 +101,58 @@ async function adicionarNovoAnime() {
     const nota = notaValue ? parseFloat(notaValue) : null;
     const tipoAdicao = document.querySelector('input[name="tipoAdicao"]:checked').value;
     let generos = [];
+    let malId = null;
 
     if (tipoAdicao === 'manual') {
         const generoSelect = document.getElementById('genero');
         generos = Array.from(generoSelect.selectedOptions).map(option => option.value);
     } else if (tipoAdicao === 'api') {
-        const animeApiSelect = document.getElementById('animeApi');
-        const selectedOption = animeApiSelect.selectedOptions[0];
-        if (selectedOption && selectedOption.dataset.anime) {
-            const animeData = JSON.parse(selectedOption.dataset.anime);
-            generos = animeData.genres || [];
-        }
-    } else if (tipoAdicao === 'jikan') {
         const animeJikanSelect = document.getElementById('animeJikan');
-        const selectedOption = animeJikanSelect.selectedOptions[0];
-        if (selectedOption && selectedOption.dataset.anime) {
-            const animeData = JSON.parse(selectedOption.dataset.anime);
-            const generosIngles = animeData.genres?.map(g => g.name) || [];
+        const selectedJikanOption = animeJikanSelect.selectedOptions[0];
+        if (selectedJikanOption && selectedJikanOption.dataset.anime) {
+            const jikanData = JSON.parse(selectedJikanOption.dataset.anime);
+            const generosIngles = jikanData.genres?.map(g => g.name) || [];
             generos = traduzirGeneros(generosIngles);
+            malId = jikanData.mal_id;
         }
     }
     const descricao = document.getElementById('descricao').value;
 
-    // Captura URL da imagem, anime_slug e animeLink se for da API
+    // Captura dados das APIs
     let imagemUrl = null;
     let animeSlug = null;
     let animeLink = null;
+    
     if (tipoAdicao === 'api') {
-        const animeApiSelect = document.getElementById('animeApi');
-        const selectedOption = animeApiSelect.selectedOptions[0];
-        if (selectedOption && selectedOption.dataset.anime) {
-            const animeData = JSON.parse(selectedOption.dataset.anime);
-            imagemUrl = animeData.thumbnail || null;
-            animeSlug = animeData.slug || null;
-            animeLink = animeData.animeLink || null;
+        // Determina qual imagem usar
+        const imagemSelect = document.getElementById('imagemSelect');
+        const imagemEscolhida = imagemSelect ? imagemSelect.value : '';
+        
+        if (imagemEscolhida === 'jikan') {
+            const jikanSelect = document.getElementById('animeJikan');
+            const jikanOption = jikanSelect.selectedOptions[0];
+            if (jikanOption && jikanOption.dataset.anime) {
+                const jikanData = JSON.parse(jikanOption.dataset.anime);
+                imagemUrl = jikanData.images?.jpg?.image_url || null;
+            }
+        } else if (imagemEscolhida === 'animefire') {
+            const animeApiSelect = document.getElementById('animeApi');
+            const animeApiOption = animeApiSelect.selectedOptions[0];
+            if (animeApiOption && animeApiOption.dataset.anime) {
+                const animeFireData = JSON.parse(animeApiOption.dataset.anime);
+                imagemUrl = animeFireData.thumbnail || null;
+            }
+        } else if (imagemEscolhida) {
+            imagemUrl = imagemEscolhida; // URL direta das imagens extras
         }
-    } else if (tipoAdicao === 'jikan') {
-        const animeJikanSelect = document.getElementById('animeJikan');
-        const selectedOption = animeJikanSelect.selectedOptions[0];
-        if (selectedOption && selectedOption.dataset.anime) {
-            const animeData = JSON.parse(selectedOption.dataset.anime);
-            imagemUrl = animeData.images?.jpg?.image_url || null;
+        
+        // Pega dados do AnimeFire se disponível
+        const animeApiSelect = document.getElementById('animeApi');
+        const animeApiOption = animeApiSelect.selectedOptions[0];
+        if (animeApiOption && animeApiOption.dataset.anime) {
+            const animeFireData = JSON.parse(animeApiOption.dataset.anime);
+            animeSlug = animeFireData.slug || null;
+            animeLink = animeFireData.animeLink || null;
         }
     }
 
@@ -146,20 +160,36 @@ async function adicionarNovoAnime() {
         const colecao = generos.includes('Hentai') ? 'outros' : 'animes';
         const proximoId = await obterProximoId(colecao);
 
-        await addDoc(collection(db, colecao), {
+        const animeData = {
             ordem: proximoId,
             nome: nome,
             nota: nota,
             generos: generos,
-            descricao: descricao,
-            imagem: imagemUrl,
-            anime_slug: animeSlug,
-            animeLink: animeLink
-        });
+            descricao: descricao
+        };
+        
+        // Adiciona campos opcionais apenas se não forem undefined
+        if (imagemUrl !== null) animeData.imagem = imagemUrl;
+        if (animeSlug !== null) animeData.anime_slug = animeSlug;
+        if (animeLink !== null) animeData.animeLink = animeLink;
+        if (malId !== null) animeData.mal_id = malId;
+
+        await addDoc(collection(db, colecao), animeData);
 
         resetarFormulario();
         carregarAnimes();
         document.getElementById('status').innerHTML = '<div class="success">✅ Anime adicionado com sucesso!</div>';
+        
+        // Remove mensagem após 4 segundos
+        setTimeout(() => {
+            document.getElementById('status').innerHTML = '';
+        }, 2000);
+        
+        // Reinicializa Select2 após adicionar anime
+        setTimeout(() => {
+            inicializarJikanSelect();
+            inicializarApiSelect();
+        }, 100);
 
     } catch (error) {
         document.getElementById('status').innerHTML = `<div class="danger">❌ Erro: ${error.message}</div>`;
@@ -179,28 +209,55 @@ async function adicionarTemporada() {
         return;
     }
 
-    // Captura dados da API selecionada
+    // Captura dados das APIs
     let imagemUrl = null;
     let animeSlug = null;
     let animeLink = null;
+    let malId = null;
     
     const apiVincular = document.querySelector('input[name="apiVincular"]:checked')?.value || 'nenhuma';
     
-    if (apiVincular === 'anfire') {
-        const animeApiSelect = document.getElementById('animeApi');
-        const selectedOption = animeApiSelect.selectedOptions[0];
-        if (selectedOption && selectedOption.dataset.anime) {
-            const animeData = JSON.parse(selectedOption.dataset.anime);
-            imagemUrl = animeData.thumbnail || null;
-            animeSlug = animeData.slug || null;
-            animeLink = animeData.animeLink || null;
+    if (apiVincular === 'api') {
+        // Determina qual imagem usar
+        const imagemSelect = document.getElementById('imagemSelectVincular');
+        const imagemEscolhida = imagemSelect ? imagemSelect.value : '';
+        
+        if (imagemEscolhida === 'jikan') {
+            const jikanSelect = document.getElementById('animeJikanVincular');
+            const jikanOption = jikanSelect.selectedOptions[0];
+            if (jikanOption && jikanOption.dataset.anime) {
+                const jikanData = JSON.parse(jikanOption.dataset.anime);
+                imagemUrl = jikanData.images?.jpg?.image_url || null;
+                malId = jikanData.mal_id || null;
+            }
+        } else if (imagemEscolhida === 'animefire') {
+            const animeApiSelect = document.getElementById('animeApiVincular');
+            const animeApiOption = animeApiSelect.selectedOptions[0];
+            if (animeApiOption && animeApiOption.dataset.anime) {
+                const animeFireData = JSON.parse(animeApiOption.dataset.anime);
+                imagemUrl = animeFireData.thumbnail || null;
+            }
+        } else if (imagemEscolhida) {
+            imagemUrl = imagemEscolhida; // URL direta das imagens extras
         }
-    } else if (apiVincular === 'jikan') {
-        const animeJikanSelect = document.getElementById('animeJikan');
-        const selectedOption = animeJikanSelect.selectedOptions[0];
-        if (selectedOption && selectedOption.dataset.anime) {
-            const animeData = JSON.parse(selectedOption.dataset.anime);
-            imagemUrl = animeData.images?.jpg?.image_url || null;
+        
+        // Pega dados do AnimeFire se disponível
+        const animeApiSelect = document.getElementById('animeApiVincular');
+        const animeApiOption = animeApiSelect.selectedOptions[0];
+        if (animeApiOption && animeApiOption.dataset.anime) {
+            const animeFireData = JSON.parse(animeApiOption.dataset.anime);
+            animeSlug = animeFireData.slug || null;
+            animeLink = animeFireData.animeLink || null;
+        }
+        
+        // Pega mal_id do Jikan se não foi definido ainda
+        if (!malId) {
+            const jikanSelect = document.getElementById('animeJikanVincular');
+            const jikanOption = jikanSelect.selectedOptions[0];
+            if (jikanOption && jikanOption.dataset.anime) {
+                const jikanData = JSON.parse(jikanOption.dataset.anime);
+                malId = jikanData.mal_id || null;
+            }
         }
     }
 
@@ -226,16 +283,11 @@ async function adicionarTemporada() {
             descricoes: [descricao]
         };
 
-        // Adiciona imagem, anime_slug e animeLink se fornecidos
-        if (imagemUrl) {
-            novaTemporada.imagem = imagemUrl;
-        }
-        if (animeSlug) {
-            novaTemporada.anime_slug = animeSlug;
-        }
-        if (animeLink) {
-            novaTemporada.animeLink = animeLink;
-        }
+        // Adiciona campos opcionais apenas se não forem undefined
+        if (imagemUrl !== null) novaTemporada.imagem = imagemUrl;
+        if (animeSlug !== null) novaTemporada.anime_slug = animeSlug;
+        if (animeLink !== null) novaTemporada.animeLink = animeLink;
+        if (malId !== null) novaTemporada.mal_id = malId;
 
         temporadas.push(novaTemporada);
 
@@ -247,6 +299,24 @@ async function adicionarTemporada() {
         resetarFormulario();
         carregarAnimes();
         document.getElementById('status').innerHTML = `<div class="success">✅ ${proximaTemporada}ª Temporada adicionada com sucesso!</div>`;
+        
+        // Remove mensagem após 4 segundos
+        setTimeout(() => {
+            document.getElementById('status').innerHTML = '';
+        }, 2000);
+        
+        // Limpa campos das APIs para temporadas
+        if (typeof $ !== 'undefined') {
+            $('#animeJikanVincular').val(null).trigger('change');
+            $('#animeApiVincular').val(null).trigger('change');
+            if ($('#imagemSelectVincular').hasClass('select2-hidden-accessible')) {
+                $('#imagemSelectVincular').val(null).trigger('change');
+            }
+        }
+        
+        // Oculta seleção de imagem
+        const imagemOpcoesVincular = document.getElementById('imagemOpcoesVincular');
+        if (imagemOpcoesVincular) imagemOpcoesVincular.style.display = 'none';
 
     } catch (error) {
         document.getElementById('status').innerHTML = `<div class="danger">❌ Erro: ${error.message}</div>`;
@@ -396,14 +466,11 @@ window.alterarTipoAdicao = () => {
     const tipoAdicao = document.querySelector('input[name="tipoAdicao"]:checked').value;
     const generoManual = document.getElementById('generoManual');
     const generoApi = document.getElementById('generoApi');
-    const generoJikan = document.getElementById('generoJikan');
     const animeVinculado = document.getElementById('animeVinculado');
-    const apiHelp = document.getElementById('apiHelp');
 
     // Oculta todas as seções primeiro
     generoManual.style.display = 'none';
     generoApi.style.display = 'none';
-    generoJikan.style.display = 'none';
     animeVinculado.style.display = 'none';
 
     // Remove required de todos
@@ -411,24 +478,27 @@ window.alterarTipoAdicao = () => {
     document.getElementById('animeApi').required = false;
     document.getElementById('animeJikan').required = false;
     document.getElementById('animeExistente').required = false;
+    
+    // Remove required dos campos de vincular se existirem
+    const animeJikanVincular = document.getElementById('animeJikanVincular');
+    if (animeJikanVincular) animeJikanVincular.required = false;
 
     if (tipoAdicao === 'manual') {
         generoManual.style.display = 'flex';
         document.getElementById('genero').required = true;
     } else if (tipoAdicao === 'api') {
         generoApi.style.display = 'flex';
-        document.getElementById('animeApi').required = true;
-        apiHelp.textContent = 'Digite para pesquisar animes da API AnFire';
-        inicializarApiSelect();
-    } else if (tipoAdicao === 'jikan') {
-        generoJikan.style.display = 'flex';
         document.getElementById('animeJikan').required = true;
-        inicializarJikanSelect();
+        // Aguarda o elemento ficar visível antes de inicializar
+        setTimeout(() => {
+            inicializarJikanSelect();
+            inicializarApiSelect();
+        }, 100);
     } else if (tipoAdicao === 'vincular') {
         animeVinculado.style.display = 'flex';
         document.getElementById('animeExistente').required = true;
         popularAnimesExistentes();
-        alterarApiVincular(); // Chama função para controlar APIs
+        alterarApiVincular();
     }
 };
 
@@ -438,34 +508,29 @@ window.alterarTipoGenero = window.alterarTipoAdicao;
 // Função para alternar API na vinculação
 window.alterarApiVincular = () => {
     const apiVincular = document.querySelector('input[name="apiVincular"]:checked')?.value || 'nenhuma';
-    const generoApi = document.getElementById('generoApi');
-    const generoJikan = document.getElementById('generoJikan');
-    const apiHelp = document.getElementById('apiHelp');
-
-    // Oculta ambas as APIs primeiro
-    generoApi.style.display = 'none';
-    generoJikan.style.display = 'none';
+    const generoApiVincular = document.getElementById('generoApiVincular');
     
-    // Remove required de ambas
-    document.getElementById('animeApi').required = false;
-    document.getElementById('animeJikan').required = false;
-
-    if (apiVincular === 'anfire') {
-        generoApi.style.display = 'flex';
-        apiHelp.textContent = 'Opcional: Selecione para usar imagem da API AnFire';
-        inicializarApiSelect();
-    } else if (apiVincular === 'jikan') {
-        generoJikan.style.display = 'flex';
-        document.getElementById('jikanHelp').textContent = 'Opcional: Selecione para usar imagem da API Jikan';
-        inicializarJikanSelect();
+    if (apiVincular === 'nenhuma') {
+        generoApiVincular.style.display = 'none';
+    } else if (apiVincular === 'api') {
+        generoApiVincular.style.display = 'flex';
+        document.getElementById('animeJikanVincular').required = true;
+        
+        // Inicializa os selects das APIs
+        inicializarJikanSelectVincular();
+        inicializarApiSelectVincular();
     }
 };
 
 // Função para inicializar Select2 da API AnFire
 function inicializarApiSelect() {
-    if (typeof $ !== 'undefined' && $('#animeApi').length && !$('#animeApi').hasClass('select2-hidden-accessible')) {
+    if (typeof $ !== 'undefined' && $('#animeApi').length) {
+        if ($('#animeApi').hasClass('select2-hidden-accessible')) {
+            $('#animeApi').select2('destroy');
+        }
+        
         $('#animeApi').select2({
-            placeholder: 'Digite o nome do anime para pesquisar...',
+            placeholder: 'Digite o nome do anime para pesquisar (opcional)...',
             allowClear: true,
             ajax: {
                 url: 'http://18.230.118.237/anime/search',
@@ -501,10 +566,18 @@ function inicializarApiSelect() {
             },
             templateSelection: function (anime) {
                 if (anime.anime) {
-                    // Armazena dados do anime no option
                     const option = document.querySelector(`#animeApi option[value="${anime.id}"]`);
                     if (option) {
                         option.dataset.anime = JSON.stringify(anime.anime);
+                    }
+                    // Atualiza opções de imagem se Jikan já estiver selecionado
+                    const jikanSelect = document.getElementById('animeJikan');
+                    if (jikanSelect && jikanSelect.value) {
+                        const jikanOption = jikanSelect.selectedOptions[0];
+                        if (jikanOption && jikanOption.dataset.anime) {
+                            const jikanData = JSON.parse(jikanOption.dataset.anime);
+                            carregarImagensAnime(jikanData.mal_id);
+                        }
                     }
                 }
                 return anime.text;
@@ -513,9 +586,102 @@ function inicializarApiSelect() {
     }
 }
 
+// Função para carregar imagens do anime
+async function carregarImagensAnime(malId) {
+    try {
+        const response = await fetch(`https://api.jikan.moe/v4/anime/${malId}/pictures`);
+        const data = await response.json();
+        
+        // Destroi Select2 existente se houver
+        if ($('#imagemSelect').hasClass('select2-hidden-accessible')) {
+            $('#imagemSelect').select2('destroy');
+        }
+        
+        const imagemSelect = document.getElementById('imagemSelect');
+        if (!imagemSelect) return;
+        
+        imagemSelect.innerHTML = '<option value="">Selecione uma imagem...</option>';
+        
+        // Pega URLs das imagens para usar no Select2
+        let jikanImageUrl = null;
+        let animeFireImageUrl = null;
+        
+        // Pega imagem do Jikan
+        const jikanSelect = document.getElementById('animeJikan');
+        if (jikanSelect && jikanSelect.selectedOptions[0] && jikanSelect.selectedOptions[0].dataset.anime) {
+            const jikanData = JSON.parse(jikanSelect.selectedOptions[0].dataset.anime);
+            jikanImageUrl = jikanData.images?.jpg?.image_url;
+        }
+        
+        // Pega imagem do AnimeFire
+        const animeApiSelect = document.getElementById('animeApi');
+        if (animeApiSelect && animeApiSelect.selectedOptions[0] && animeApiSelect.selectedOptions[0].dataset.anime) {
+            const animeFireData = JSON.parse(animeApiSelect.selectedOptions[0].dataset.anime);
+            animeFireImageUrl = animeFireData.thumbnail;
+        }
+        
+        // Adiciona imagem principal do Jikan
+        if (jikanImageUrl) {
+            const jikanOption = document.createElement('option');
+            jikanOption.value = 'jikan';
+            jikanOption.textContent = 'Imagem Principal (Jikan)';
+            jikanOption.dataset.imageUrl = jikanImageUrl;
+            imagemSelect.appendChild(jikanOption);
+        }
+        
+        // Adiciona imagem do AnimeFire se disponível
+        if (animeFireImageUrl) {
+            const animeFireOption = document.createElement('option');
+            animeFireOption.value = 'animefire';
+            animeFireOption.textContent = 'Imagem do AnimeFire';
+            animeFireOption.dataset.imageUrl = animeFireImageUrl;
+            imagemSelect.appendChild(animeFireOption);
+        }
+        
+        // Adiciona imagens extras do Jikan
+        data.data.forEach((picture, index) => {
+            const option = document.createElement('option');
+            option.value = picture.jpg.image_url;
+            option.textContent = `Imagem Extra ${index + 1}`;
+            option.dataset.imageUrl = picture.jpg.image_url;
+            imagemSelect.appendChild(option);
+        });
+        
+        // Inicializa Select2 com imagens
+        $('#imagemSelect').select2({
+            placeholder: 'Selecione uma imagem...',
+            allowClear: true,
+            templateResult: function(option) {
+                if (option.loading) return option.text;
+                if (!option.element || !option.element.dataset.imageUrl) return $(`<div>${option.text}</div>`);
+                
+                return $(`
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${option.element.dataset.imageUrl}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'">
+                        <div>${option.text}</div>
+                    </div>
+                `);
+            },
+            templateSelection: function(option) {
+                return option.text;
+            }
+        });
+        
+        const imagemOpcoes = document.getElementById('imagemOpcoes');
+        if (imagemOpcoes) imagemOpcoes.style.display = 'flex';
+        
+    } catch (error) {
+        console.error('Erro ao carregar imagens:', error);
+    }
+}
+
 // Função para inicializar Select2 da API Jikan
 function inicializarJikanSelect() {
-    if (typeof $ !== 'undefined' && $('#animeJikan').length && !$('#animeJikan').hasClass('select2-hidden-accessible')) {
+    if (typeof $ !== 'undefined' && $('#animeJikan').length) {
+        if ($('#animeJikan').hasClass('select2-hidden-accessible')) {
+            $('#animeJikan').select2('destroy');
+        }
+        
         $('#animeJikan').select2({
             placeholder: 'Digite o nome do anime para pesquisar...',
             allowClear: true,
@@ -554,15 +720,235 @@ function inicializarJikanSelect() {
             },
             templateSelection: function (anime) {
                 if (anime.anime) {
-                    // Armazena dados do anime no option
                     const option = document.querySelector(`#animeJikan option[value="${anime.id}"]`);
                     if (option) {
                         option.dataset.anime = JSON.stringify(anime.anime);
+                    }
+                    carregarImagensAnime(anime.anime.mal_id);
+                }
+                return anime.text;
+            }
+        });
+        
+        $('#animeJikan').on('select2:clear', function() {
+            const imagemOpcoes = document.getElementById('imagemOpcoes');
+            if (imagemOpcoes) imagemOpcoes.style.display = 'none';
+        });
+    }
+}
+
+// Função para inicializar Select2 da API Jikan para vincular
+function inicializarJikanSelectVincular() {
+    if (typeof $ !== 'undefined' && $('#animeJikanVincular').length) {
+        if ($('#animeJikanVincular').hasClass('select2-hidden-accessible')) {
+            $('#animeJikanVincular').select2('destroy');
+        }
+        
+        $('#animeJikanVincular').select2({
+            placeholder: 'Digite o nome do anime para pesquisar...',
+            allowClear: true,
+            ajax: {
+                url: 'https://api.jikan.moe/v4/anime',
+                dataType: 'json',
+                delay: 300,
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        limit: 10
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.data.map(anime => ({
+                            id: anime.mal_id,
+                            text: anime.title,
+                            anime: anime
+                        }))
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 2,
+            templateResult: function (anime) {
+                if (anime.loading) return anime.text;
+                if (!anime.anime) return $(`<div>${anime.text}</div>`);
+                
+                return $(`
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${anime.anime.images.jpg.image_url}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'">
+                        <div>${anime.text}</div>
+                    </div>
+                `);
+            },
+            templateSelection: function (anime) {
+                if (anime.anime) {
+                    const option = document.querySelector(`#animeJikanVincular option[value="${anime.id}"]`);
+                    if (option) {
+                        option.dataset.anime = JSON.stringify(anime.anime);
+                    }
+                    carregarImagensAnimeVincular(anime.anime.mal_id);
+                }
+                return anime.text;
+            }
+        });
+        
+        $('#animeJikanVincular').on('select2:clear', function() {
+            const imagemOpcoes = document.getElementById('imagemOpcoesVincular');
+            if (imagemOpcoes) imagemOpcoes.style.display = 'none';
+        });
+    }
+}
+
+// Função para inicializar Select2 da API AnFire para vincular
+function inicializarApiSelectVincular() {
+    if (typeof $ !== 'undefined' && $('#animeApiVincular').length) {
+        if ($('#animeApiVincular').hasClass('select2-hidden-accessible')) {
+            $('#animeApiVincular').select2('destroy');
+        }
+        
+        $('#animeApiVincular').select2({
+            placeholder: 'Digite o nome do anime para pesquisar (opcional)...',
+            allowClear: true,
+            ajax: {
+                url: 'http://18.230.118.237/anime/search',
+                dataType: 'json',
+                delay: 300,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.result.map(anime => ({
+                            id: anime.animeName,
+                            text: anime.animeName,
+                            anime: anime
+                        }))
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 2,
+            templateResult: function (anime) {
+                if (anime.loading) return anime.text;
+                if (!anime.anime) return $(`<div>${anime.text}</div>`);
+                
+                return $(`
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${anime.anime.thumbnail}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'">
+                        <div>${anime.text}</div>
+                    </div>
+                `);
+            },
+            templateSelection: function (anime) {
+                if (anime.anime) {
+                    const option = document.querySelector(`#animeApiVincular option[value="${anime.id}"]`);
+                    if (option) {
+                        option.dataset.anime = JSON.stringify(anime.anime);
+                    }
+                    // Atualiza opções de imagem se Jikan já estiver selecionado
+                    const jikanSelect = document.getElementById('animeJikanVincular');
+                    if (jikanSelect && jikanSelect.value) {
+                        const jikanOption = jikanSelect.selectedOptions[0];
+                        if (jikanOption && jikanOption.dataset.anime) {
+                            const jikanData = JSON.parse(jikanOption.dataset.anime);
+                            carregarImagensAnimeVincular(jikanData.mal_id);
+                        }
                     }
                 }
                 return anime.text;
             }
         });
+    }
+}
+
+// Função para carregar imagens do anime para vincular
+async function carregarImagensAnimeVincular(malId) {
+    try {
+        const response = await fetch(`https://api.jikan.moe/v4/anime/${malId}/pictures`);
+        const data = await response.json();
+        
+        // Destroi Select2 existente se houver
+        if ($('#imagemSelectVincular').hasClass('select2-hidden-accessible')) {
+            $('#imagemSelectVincular').select2('destroy');
+        }
+        
+        const imagemSelect = document.getElementById('imagemSelectVincular');
+        if (!imagemSelect) return;
+        
+        imagemSelect.innerHTML = '<option value="">Selecione uma imagem...</option>';
+        
+        // Pega URLs das imagens para usar no Select2
+        let jikanImageUrl = null;
+        let animeFireImageUrl = null;
+        
+        // Pega imagem do Jikan
+        const jikanSelect = document.getElementById('animeJikanVincular');
+        if (jikanSelect && jikanSelect.selectedOptions[0] && jikanSelect.selectedOptions[0].dataset.anime) {
+            const jikanData = JSON.parse(jikanSelect.selectedOptions[0].dataset.anime);
+            jikanImageUrl = jikanData.images?.jpg?.image_url;
+        }
+        
+        // Pega imagem do AnimeFire
+        const animeApiSelect = document.getElementById('animeApiVincular');
+        if (animeApiSelect && animeApiSelect.selectedOptions[0] && animeApiSelect.selectedOptions[0].dataset.anime) {
+            const animeFireData = JSON.parse(animeApiSelect.selectedOptions[0].dataset.anime);
+            animeFireImageUrl = animeFireData.thumbnail;
+        }
+        
+        // Adiciona imagem principal do Jikan
+        if (jikanImageUrl) {
+            const jikanOption = document.createElement('option');
+            jikanOption.value = 'jikan';
+            jikanOption.textContent = 'Imagem Principal (Jikan)';
+            jikanOption.dataset.imageUrl = jikanImageUrl;
+            imagemSelect.appendChild(jikanOption);
+        }
+        
+        // Adiciona imagem do AnimeFire se disponível
+        if (animeFireImageUrl) {
+            const animeFireOption = document.createElement('option');
+            animeFireOption.value = 'animefire';
+            animeFireOption.textContent = 'Imagem do AnimeFire';
+            animeFireOption.dataset.imageUrl = animeFireImageUrl;
+            imagemSelect.appendChild(animeFireOption);
+        }
+        
+        // Adiciona imagens extras do Jikan
+        data.data.forEach((picture, index) => {
+            const option = document.createElement('option');
+            option.value = picture.jpg.image_url;
+            option.textContent = `Imagem Extra ${index + 1}`;
+            option.dataset.imageUrl = picture.jpg.image_url;
+            imagemSelect.appendChild(option);
+        });
+        
+        // Inicializa Select2 com imagens
+        $('#imagemSelectVincular').select2({
+            placeholder: 'Selecione uma imagem...',
+            allowClear: true,
+            templateResult: function(option) {
+                if (option.loading) return option.text;
+                if (!option.element || !option.element.dataset.imageUrl) return $(`<div>${option.text}</div>`);
+                
+                return $(`
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${option.element.dataset.imageUrl}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'">
+                        <div>${option.text}</div>
+                    </div>
+                `);
+            },
+            templateSelection: function(option) {
+                return option.text;
+            }
+        });
+        
+        const imagemOpcoes = document.getElementById('imagemOpcoesVincular');
+        if (imagemOpcoes) imagemOpcoes.style.display = 'flex';
+        
+    } catch (error) {
+        console.error('Erro ao carregar imagens:', error);
     }
 }
 
@@ -631,7 +1017,14 @@ window.resetarFormulario = () => {
     if (typeof $ !== 'undefined') {
         $('#animeApi').val(null).trigger('change');
         $('#animeJikan').val(null).trigger('change');
+        if ($('#imagemSelect').hasClass('select2-hidden-accessible')) {
+            $('#imagemSelect').val(null).trigger('change');
+        }
     }
+    
+    // Oculta seleção de imagem
+    const imagemOpcoes = document.getElementById('imagemOpcoes');
+    if (imagemOpcoes) imagemOpcoes.style.display = 'none';
 
     // Limpa status
     const status = document.getElementById('status');

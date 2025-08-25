@@ -286,6 +286,12 @@ select {
 #opcoes {
     margin-left: 5px;
     margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#opcoesVincular{
+    margin-bottom: 10px;
 }
 
 #opcoes input,
@@ -324,6 +330,7 @@ select[multiple] {
 #generoApi {
     margin-left: 5px;
     width: 100%;
+    gap: 5px;
 }
 
 #generoJikan {
@@ -336,6 +343,27 @@ select[multiple] {
 }
 
 #animeJikan {
+    width: 600px;
+}
+
+#imagemSelect {
+    width: 600px;
+}
+
+#generoApiVincular {
+    width: 100%;
+    gap: 5px;
+}
+
+#animeApiVincular {
+    width: 600px;
+}
+
+#animeJikanVincular {
+    width: 600px;
+}
+
+#imagemSelectVincular {
     width: 600px;
 }
 
@@ -1084,7 +1112,7 @@ textarea {
     }
 
     #opcoesVincular {
-        margin-left: 2px;
+        margin-left: 1px;
     }
 
     #animeExistente {
@@ -1093,10 +1121,32 @@ textarea {
 
     #generoApi {
         margin-left: 0;
+        gap: 5px;
     }
 
     #generoJikan {
         margin-left: 0;
+    }
+    
+    #imagemSelect {
+        width: 100% !important;
+    }
+
+    #generoApiVincular {
+        margin-left: 0;
+        gap: 5px;
+    }
+
+    #animeApiVincular {
+        width: 100% !important;
+    }
+
+    #animeJikanVincular {
+        width: 100% !important;
+    }
+
+    #imagemSelectVincular {
+        width: 100% !important;
     }
 
     #animeVinculado {

@@ -24,14 +24,9 @@
 
         <!-- Opções de tipo -->
         <div id="opcoes">
-            <label><input type="radio" name="tipoAdicao" value="api" checked onchange="alterarTipoAdicao()"> Buscar
-                anime da API AnFire</label><br>
-            <label><input type="radio" name="tipoAdicao" value="jikan" onchange="alterarTipoAdicao()"> Buscar
-                anime da API Jikan</label><br>
-            <label><input type="radio" name="tipoAdicao" value="manual" onchange="alterarTipoAdicao()"> Selecionar
-                gêneros manualmente</label><br>
-            <label><input type="radio" name="tipoAdicao" value="vincular" onchange="alterarTipoAdicao()"> Vincular anime
-                existente</label>
+            <label><input type="radio" name="tipoAdicao" value="api" checked onchange="alterarTipoAdicao()"> Buscar na API (Recomendado)</label>
+            <label><input type="radio" name="tipoAdicao" value="manual" onchange="alterarTipoAdicao()"> Selecionar gêneros manualmente</label>
+            <label><input type="radio" name="tipoAdicao" value="vincular" onchange="alterarTipoAdicao()"> Vincular anime existente</label>
         </div>
 
         <div id="divOpcoes">
@@ -40,14 +35,32 @@
                 <select id="animeExistente">
                     <option value="">Selecione um anime...</option>
                 </select>
-                <small >Selecione um anime já cadastrado no banco. O número da temporada será gerado
+                <small>Selecione um anime já cadastrado no banco. O número da temporada será gerado
                     automaticamente.</small>
-                    
+
                 <!-- Opções de API para vincular -->
                 <div id="opcoesVincular">
-                    <label><input type="radio" name="apiVincular" value="nenhuma" checked onchange="alterarApiVincular()"> Não usar API</label>
-                    <label><input type="radio" name="apiVincular" value="anfire" onchange="alterarApiVincular()"> Usar API AnFire</label>
-                    <label><input type="radio" name="apiVincular" value="jikan" onchange="alterarApiVincular()"> Usar API Jikan</label>
+                    <label><input type="radio" name="apiVincular" value="nenhuma" checked
+                            onchange="alterarApiVincular()"> Não usar API</label>
+                    <label><input type="radio" name="apiVincular" value="api" onchange="alterarApiVincular()"> Buscar na API (Recomendado)</label>
+                </div>
+
+                <!-- Select das APIs para vincular -->
+                <div id="generoApiVincular" style="display: none;">
+                    <div>
+                        <select id="animeJikanVincular" required></select>
+                        <small id="jikanVincularHelp">Jikan API (Obrigatório) - Digite para pesquisar animes</small>
+                    </div>
+
+                    <div>
+                        <select id="animeApiVincular"></select>
+                        <small id="apiVincularHelp">AnimeFire API (Opcional) - Digite para pesquisar animes</small>
+                    </div>
+
+                    <div id="imagemOpcoesVincular" style="display: none;">
+                        <select id="imagemSelectVincular"></select>
+                        <small>Escolha a imagem do anime</small>
+                    </div>
                 </div>
             </div>
 
@@ -95,16 +108,22 @@
                 <small>Segure Ctrl (ou Cmd no Mac) para selecionar múltiplos gêneros</small>
             </div>
 
-            <!-- Select da API AnFire -->
+            <!-- Select das APIs -->
             <div id="generoApi">
-                <select id="animeApi" required></select>
-                <small id="apiHelp">Digite para pesquisar animes da API AnFire</small>
-            </div>
-            
-            <!-- Select da API Jikan -->
-            <div id="generoJikan" style="display: none;">
-                <select id="animeJikan" required></select>
-                <small id="jikanHelp">Digite para pesquisar animes da API Jikan (MyAnimeList)</small>
+                <div>
+                    <select id="animeJikan" required></select>
+                    <small id="jikanHelp">Jikan API (Obrigatório) - Digite para pesquisar animes</small>
+                </div>
+
+                <div>
+                    <select id="animeApi"></select>
+                    <small id="apiHelp">AnimeFire API (Opcional) - Digite para pesquisar animes</small>
+                </div>
+
+                <div id="imagemOpcoes" style="display: none;">
+                    <select id="imagemSelect"></select>
+                    <small>Escolha a imagem do anime</small>
+                </div>
             </div>
         </div>
 
