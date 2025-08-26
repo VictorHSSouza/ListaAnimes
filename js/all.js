@@ -25,7 +25,9 @@ window.db = db; // Para uso nos outros scripts
 // Função para controlar dropdown
 window.toggleDropdown = () => {
     const dropdown = document.querySelector('.mobile-dropdown');
-    dropdown.classList.toggle('active');
+    if (dropdown) {
+        dropdown.classList.toggle('active');
+    }
 };
 
 // Função para controlar dropdown de Gerenciar
@@ -33,7 +35,9 @@ window.toggleGerenciarDropdown = (event) => {
     event.preventDefault();
     event.stopPropagation();
     const dropdown = event.target.closest('.dropdown');
-    dropdown.classList.toggle('active');
+    if (dropdown) {
+        dropdown.classList.toggle('active');
+    }
 };
 
 // Função para controlar sub-menu mobile
@@ -41,7 +45,9 @@ window.toggleMobileSubmenu = (event) => {
     event.preventDefault();
     event.stopPropagation();
     const submenu = document.getElementById('mobile-gerenciar-submenu');
-    submenu.classList.toggle('active');
+    if (submenu) {
+        submenu.classList.toggle('active');
+    }
 };
 
 // Função para fechar todos os dropdowns

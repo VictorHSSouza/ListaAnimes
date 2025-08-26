@@ -1,16 +1,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDYjQHR5D9R6-NeI2F1rKHcE96awGqH6to",
-    authDomain: "listaanimes-ace11.firebaseapp.com",
-    projectId: "listaanimes-ace11",
-    storageBucket: "listaanimes-ace11.firebasestorage.app",
-    messagingSenderId: "670425575167",
-    appId: "1:670425575167:web:b19728f277cf78879966ca",
-    measurementId: "G-53EZCLPMZD"
-};
+import { firebaseConfig } from './config.js';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);

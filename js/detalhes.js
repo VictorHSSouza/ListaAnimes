@@ -83,31 +83,35 @@ function exibirDetalhes(anime, temporada = null) {
     
     // Botão agora fica no header
     
-    // Monta descrições
+    // Monta descrições com sanitização
     let descricoesHtml = '';
     if (isTemporada) {
         if (dados.descricoes && dados.descricoes.length > 0) {
-            descricoesHtml = dados.descricoes.map((desc, index) => 
-                `<div class="descricao-item">
+            descricoesHtml = dados.descricoes.map((desc, index) => {
+                const descSegura = desc.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return `<div class="descricao-item">
                     <strong>Versão ${index + 1}:</strong>
-                    <p>${desc}</p>
-                </div>`
-            ).join('');
+                    <p>${descSegura}</p>
+                </div>`;
+            }).join('');
         } else if (dados.descricao) {
-            descricoesHtml = `<div class="descricao-item"><p>${dados.descricao}</p></div>`;
+            const descSegura = dados.descricao.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            descricoesHtml = `<div class="descricao-item"><p>${descSegura}</p></div>`;
         } else {
             descricoesHtml = '<p>Nenhuma descrição disponível</p>';
         }
     } else {
         if (anime.descricoes && anime.descricoes.length > 0) {
-            descricoesHtml = anime.descricoes.map((desc, index) => 
-                `<div class="descricao-item">
+            descricoesHtml = anime.descricoes.map((desc, index) => {
+                const descSegura = desc.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return `<div class="descricao-item">
                     <strong>Versão ${index + 1}:</strong>
-                    <p>${desc}</p>
-                </div>`
-            ).join('');
+                    <p>${descSegura}</p>
+                </div>`;
+            }).join('');
         } else if (anime.descricao) {
-            descricoesHtml = `<div class="descricao-item"><p>${anime.descricao}</p></div>`;
+            const descSegura = anime.descricao.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            descricoesHtml = `<div class="descricao-item"><p>${descSegura}</p></div>`;
         } else {
             descricoesHtml = '<p>Nenhuma descrição disponível</p>';
         }
@@ -154,17 +158,21 @@ function exibirDetalhes(anime, temporada = null) {
         botoesAdmin = botaoAlterar + botaoAssistir;
     }
     
+    // Sanitiza dados antes de inserir no DOM
+    const tituloSeguro = titulo.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const generosSeguro = generosTexto.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    
     const detalhesHtml = `
         <div class="anime-detalhes-container">
             ${imagemHtml}
             <div class="anime-detalhes-content">
                 <div class="anime-detalhes-titulo">
-                    <div><h2>${titulo}</h2></div>
+                    <div><h2>${tituloSeguro}</h2></div>
                     <div class="divAlterar">${botoesAdmin}</div>
                 </div>
                 <div class="detalhes-info">
                     <p><strong>Nota:</strong> ${nota}</p>
-                    <p><strong>Gêneros:</strong> ${generosTexto}</p>
+                    <p><strong>Gêneros:</strong> ${generosSeguro}</p>
                     <div class="descricao-detalhes">
                         <strong>Descrições:</strong>
                         ${descricoesHtml}
@@ -186,18 +194,23 @@ function exibirDetalhes(anime, temporada = null) {
         `${dados.numero}ª Temporada - ${dados.nome || anime.nome}` : 
         `#${anime.ordem || 'N/A'} - ${anime.nome}`;
     
+    // Sanitiza título antes de inserir no DOM
+    const tituloH1Seguro = tituloH1.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const nomeAnimeSeguro = anime.nome.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    
     // Título da página sempre do anime principal
     if (!document.title.includes(anime.nome)) {
-        document.title = `${anime.nome} - Lista de Animes`;
+        document.title = `${nomeAnimeSeguro} - Lista de Animes`;
     }
     
-    document.querySelector('#detalhes_titulo').innerHTML = tituloH1;
+    document.querySelector('#detalhes_titulo').innerHTML = tituloH1Seguro;
     
     // Adiciona botão voltar ao anime no header se estiver visualizando temporada
     const divVoltar = document.getElementById('div-voltar');
     if (isTemporada) {
+        const nomeAnimeSeguroBtn = anime.nome.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         divVoltar.innerHTML = `
-            <button onclick="voltarParaAnime()" class="btn-principal">← ${anime.nome}</button>
+            <button onclick="voltarParaAnime()" class="btn-principal">← ${nomeAnimeSeguroBtn}</button>
             <button onclick="window.location.href='index.html'" class="btn-voltar">← Voltar</button>
         `;
     } else {
@@ -232,18 +245,22 @@ function exibirTemporadas(temporadas, nomeAnime, temporadaAtiva = null) {
             `<button onclick="voltarParaAnime()" class="btn-visualizar" id="btn-visualizar_detalhes">Voltar ao Anime</button>` :
             `<button onclick="visualizarTemporada(${temporada.numero})" class="btn-visualizar">Visualizar</button>`;
         
-        const descricaoExibida = temporada.descricao;
+        // Sanitiza dados antes de inserir no DOM
+        const descricaoSegura = temporada.descricao ? temporada.descricao.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+        const nomeTemporadaSeguro = temporada.nome ? temporada.nome.replace(/</g, '&lt;').replace(/>/g, '&gt;') : nomeAnime;
+        const nomeAnimeSeguro = nomeAnime.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         
         const generosTexto = animeOriginal.generos ? animeOriginal.generos.join(', ') : animeOriginal.genero || 'N/A';
-        const imagemHtml = temporada.imagem ? `<img src="${temporada.imagem}" alt="${temporada.nome || nomeAnime}" class="anime-image">` : '';
+        const generosSeguro = generosTexto.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const imagemHtml = temporada.imagem ? `<img src="${temporada.imagem}" alt="${nomeTemporadaSeguro || nomeAnimeSeguro}" class="anime-image">` : '';
         
         div.innerHTML = `
             ${imagemHtml}
             <div class="anime-content">
-                <h3>${temporada.numero}ª Temporada - ${temporada.nome || nomeAnime} ${isAtiva ? '(Visualizando)' : ''}</h3>
+                <h3>${temporada.numero}ª Temporada - ${nomeTemporadaSeguro || nomeAnimeSeguro} ${isAtiva ? '(Visualizando)' : ''}</h3>
                 <p><strong>Nota:</strong> ${temporada.nota !== null && temporada.nota !== undefined ? temporada.nota + '/10 ⭐' : '???'}</p>
-                <p><strong>Gêneros:</strong> ${generosTexto}</p>
-                <p><strong>Descrição:</strong> ${descricaoExibida}</p>
+                <p><strong>Gêneros:</strong> ${generosSeguro}</p>
+                <p><strong>Descrição:</strong> ${descricaoSegura}</p>
                 <div class="botoes-anime">
                     ${botaoVisualizarTemporada}
                     ${botaoAlterarTemporada}

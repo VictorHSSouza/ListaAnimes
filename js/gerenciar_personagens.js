@@ -41,10 +41,12 @@ function verificarAutenticacao() {
         adminPanel.style.display = 'block';
         const adminHeader = adminPanel.querySelector('.admin-header h2');
         if (adminHeader) {
-            adminHeader.innerHTML = `Bem-vindo, ${user.displayName}! - Adicionar Novo Personagem`;
+            const nomeUsuarioSeguro = user.displayName ? user.displayName.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Usuário';
+            adminHeader.innerHTML = `Bem-vindo, ${nomeUsuarioSeguro}! - Adicionar Novo Personagem`;
         }
     } else if (user) {
-        document.getElementById('loginStatus').innerHTML = `<div class="danger">❌ Acesso negado, ${user.displayName}. Apenas o administrador pode gerenciar personagens.</div>`;
+        const nomeUsuarioSeguro = user.displayName ? user.displayName.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Usuário';
+        document.getElementById('loginStatus').innerHTML = `<div class="danger">❌ Acesso negado, ${nomeUsuarioSeguro}. Apenas o administrador pode gerenciar personagens.</div>`;
         loginForm.style.display = 'block';
         adminPanel.style.display = 'none';
     } else {
@@ -139,11 +141,16 @@ function exibirPersonagens(personagens) {
         const div = document.createElement('div');
         div.className = 'anime';
 
+        // Sanitiza dados antes de inserir no DOM
+        const nomeSeguro = personagem.nome ? personagem.nome.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+        const animeSeguro = personagem.anime ? personagem.anime.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+        const descricaoSegura = personagem.descricao ? personagem.descricao.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+        
         div.innerHTML = `
             <div class="anime-content">
-                <h3>${personagem.nome}</h3>
-                <p><strong>Anime:</strong> ${personagem.anime}</p>
-                <p><strong>Descrição:</strong> ${personagem.descricao}</p>
+                <h3>${nomeSeguro}</h3>
+                <p><strong>Anime:</strong> ${animeSeguro}</p>
+                <p><strong>Descrição:</strong> ${descricaoSegura}</p>
             </div>
         `;
         container.appendChild(div);

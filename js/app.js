@@ -424,12 +424,16 @@ function exibirAnimes(animes) {
         const comentariosHabilitados = localStorage.getItem('comentariosHabilitados') === 'true';
         const descricaoExibida = comentariosHabilitados ? descricaoMaisRecente : '<span id="amarelo">Cuidado Spoiler⚠️⚠️⚠️!!!</span>';
 
+        // Sanitiza dados antes de inserir no DOM
+        const nomeSeguro = anime.nome ? anime.nome.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'N/A';
+        const generosSeguro = generosTexto.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        
         div.innerHTML = `
                 ${imagemHtml}
                 <div class="anime-content">
-                    <h3>#${anime.ordem || 'N/A'} - ${anime.nome}</h3>
+                    <h3>#${anime.ordem || 'N/A'} - ${nomeSeguro}</h3>
                     <p><strong>Nota:</strong> ${anime.nota !== null ? anime.nota + '/10 ⭐' : '???'}</p>
-                    <p><strong>Gêneros:</strong> ${generosTexto}</p>
+                    <p><strong>Gêneros:</strong> ${generosSeguro}</p>
                     <p><strong>Descrição:</strong> ${descricaoExibida}</p>
                     <div class="botoes-anime">
                         ${botaoVisualizar}

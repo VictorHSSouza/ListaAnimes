@@ -46,37 +46,52 @@ function displayTopAnimes(animes, type) {
         'special': 'Especiais'
     };
     
+    // Função para sanitizar dados
+    const sanitize = (str) => {
+        if (!str) return 'N/A';
+        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    };
+    
     results.innerHTML = `
         <h2 style="color: white; text-align: center; margin-bottom: 30px;">
-            🏆 Top ${typeNames[type] || type.toUpperCase()}
+            🏆 Top ${typeNames[type] || sanitize(type.toUpperCase())}
         </h2>
         <div class="anime-grid">
-            ${animes.map(anime => `
+            ${animes.map(anime => {
+                const tituloSeguro = sanitize(anime.title);
+                const tipoSeguro = sanitize(anime.type);
+                const statusSeguro = sanitize(anime.status);
+                const studiosSeguro = anime.studios?.map(s => sanitize(s.name)).join(', ') || 'N/A';
+                const generosSeguro = anime.genres?.map(g => sanitize(g.name)).join(', ') || 'N/A';
+                const sinopseSegura = anime.synopsis ? 
+                    (anime.synopsis.length > 150 ? 
+                        sanitize(anime.synopsis.substring(0, 150)) + '...' : 
+                        sanitize(anime.synopsis)) 
+                    : 'Sinopse não disponível.';
+                
+                return `
                 <div class="anime-card">
                     <img src="${anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || 'https://via.placeholder.com/300x200'}" 
-                         alt="${anime.title}" class="anime-image">
+                         alt="${tituloSeguro}" class="anime-image">
                     <div class="anime-content">
                         <div class="anime-rank">#${anime.rank} Ranking</div>
-                        <h3 class="anime-title">${anime.title}</h3>
+                        <h3 class="anime-title">${tituloSeguro}</h3>
                         <div class="anime-score">⭐ ${anime.score || 'N/A'}/10</div>
                         <div class="anime-details">
-                            <p><strong>Tipo:</strong> ${anime.type || 'N/A'}</p>
+                            <p><strong>Tipo:</strong> ${tipoSeguro}</p>
                             <p><strong>Episódios:</strong> ${anime.episodes || 'N/A'}</p>
-                            <p><strong>Status:</strong> ${anime.status || 'N/A'}</p>
+                            <p><strong>Status:</strong> ${statusSeguro}</p>
                             <p><strong>Ano:</strong> ${anime.year || anime.aired?.prop?.from?.year || 'N/A'}</p>
-                            <p><strong>Estúdio:</strong> ${anime.studios?.map(s => s.name).join(', ') || 'N/A'}</p>
-                            <p><strong>Gêneros:</strong> ${anime.genres?.map(g => g.name).join(', ') || 'N/A'}</p>
+                            <p><strong>Estúdio:</strong> ${studiosSeguro}</p>
+                            <p><strong>Gêneros:</strong> ${generosSeguro}</p>
                         </div>
                         <div class="anime-synopsis">
-                            <strong>Sinopse:</strong> ${anime.synopsis ? 
-                                (anime.synopsis.length > 150 ? 
-                                    anime.synopsis.substring(0, 150) + '...' : 
-                                    anime.synopsis) 
-                                : 'Sinopse não disponível.'}
+                            <strong>Sinopse:</strong> ${sinopseSegura}
                         </div>
                     </div>
                 </div>
-            `).join('')}
+                `;
+            }).join('')}
         </div>
     `;
 }
@@ -117,6 +132,22 @@ function initializeAnimeSearch() {
 function displaySelectedAnime(anime) {
     const results = document.getElementById('results');
     
+    // Função para sanitizar dados
+    const sanitize = (str) => {
+        if (!str) return 'N/A';
+        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    };
+    
+    const tituloSeguro = sanitize(anime.title);
+    const tituloInglesSeguro = sanitize(anime.title_english);
+    const tipoSeguro = sanitize(anime.type);
+    const statusSeguro = sanitize(anime.status);
+    const duracaoSegura = sanitize(anime.duration);
+    const ratingSeguro = sanitize(anime.rating);
+    const studiosSeguro = anime.studios?.map(s => sanitize(s.name)).join(', ') || 'N/A';
+    const generosSeguro = anime.genres?.map(g => sanitize(g.name)).join(', ') || 'N/A';
+    const sinopseSegura = sanitize(anime.synopsis) || 'Sinopse não disponível.';
+    
     results.innerHTML = `
         <h2 style="color: white; text-align: center; margin-bottom: 30px;">
             🔍 Anime Selecionado
@@ -124,23 +155,23 @@ function displaySelectedAnime(anime) {
         <div class="anime-grid">
             <div class="anime-card" style="max-width: 500px; margin: 0 auto;">
                 <img src="${anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || 'https://via.placeholder.com/300x200'}" 
-                     alt="${anime.title}" class="anime-image">
+                     alt="${tituloSeguro}" class="anime-image">
                 <div class="anime-content">
                     <div class="anime-score">⭐ ${anime.score || 'N/A'}/10</div>
-                    <h3 class="anime-title">${anime.title}</h3>
+                    <h3 class="anime-title">${tituloSeguro}</h3>
                     <div class="anime-details">
-                        <p><strong>Título em Inglês:</strong> ${anime.title_english || 'N/A'}</p>
-                        <p><strong>Tipo:</strong> ${anime.type || 'N/A'}</p>
+                        <p><strong>Título em Inglês:</strong> ${tituloInglesSeguro}</p>
+                        <p><strong>Tipo:</strong> ${tipoSeguro}</p>
                         <p><strong>Episódios:</strong> ${anime.episodes || 'N/A'}</p>
-                        <p><strong>Status:</strong> ${anime.status || 'N/A'}</p>
+                        <p><strong>Status:</strong> ${statusSeguro}</p>
                         <p><strong>Ano:</strong> ${anime.year || anime.aired?.prop?.from?.year || 'N/A'}</p>
-                        <p><strong>Estúdio:</strong> ${anime.studios?.map(s => s.name).join(', ') || 'N/A'}</p>
-                        <p><strong>Gêneros:</strong> ${anime.genres?.map(g => g.name).join(', ') || 'N/A'}</p>
-                        <p><strong>Duração:</strong> ${anime.duration || 'N/A'}</p>
-                        <p><strong>Rating:</strong> ${anime.rating || 'N/A'}</p>
+                        <p><strong>Estúdio:</strong> ${studiosSeguro}</p>
+                        <p><strong>Gêneros:</strong> ${generosSeguro}</p>
+                        <p><strong>Duração:</strong> ${duracaoSegura}</p>
+                        <p><strong>Rating:</strong> ${ratingSeguro}</p>
                     </div>
                     <div class="anime-synopsis">
-                        <strong>Sinopse:</strong> ${anime.synopsis || 'Sinopse não disponível.'}
+                        <strong>Sinopse:</strong> ${sinopseSegura}
                     </div>
                 </div>
             </div>
