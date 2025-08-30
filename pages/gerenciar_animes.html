@@ -18,15 +18,18 @@
         </div>
     </div>
     <form id="animeForm">
-        <input type="text" id="nome" placeholder="Nome do anime" required><br>
-        <input type="number" id="nota" placeholder="Nota (0-10) - Opcional" min="0" max="10" step="0.5"><br>
-        <textarea id="descricao" placeholder="Descrição do anime" rows="3" required></textarea><br>
+        <input type="text" id="nome" placeholder="Nome do anime" required>
+        <input type="number" id="nota" placeholder="Nota (0-10) - Opcional" min="0" max="10" step="0.5">
+        <textarea id="descricao" placeholder="Descrição do anime" rows="3" required></textarea>
 
         <!-- Opções de tipo -->
         <div id="opcoes">
-            <label><input type="radio" name="tipoAdicao" value="api" checked onchange="alterarTipoAdicao()"> Buscar na API (Recomendado)</label>
-            <label><input type="radio" name="tipoAdicao" value="manual" onchange="alterarTipoAdicao()"> Selecionar gêneros manualmente</label>
-            <label><input type="radio" name="tipoAdicao" value="vincular" onchange="alterarTipoAdicao()"> Vincular anime existente</label>
+            <label><input type="radio" name="tipoAdicao" value="api" checked onchange="alterarTipoAdicao()"> Buscar na
+                API (Recomendado)</label>
+            <label><input type="radio" name="tipoAdicao" value="manual" onchange="alterarTipoAdicao()"> Selecionar
+                gêneros manualmente</label>
+            <label><input type="radio" name="tipoAdicao" value="vincular" onchange="alterarTipoAdicao()"> Vincular anime
+                existente</label>
         </div>
 
         <div id="divOpcoes">
@@ -42,7 +45,8 @@
                 <div id="opcoesVincular">
                     <label><input type="radio" name="apiVincular" value="nenhuma" checked
                             onchange="alterarApiVincular()"> Não usar API</label>
-                    <label><input type="radio" name="apiVincular" value="api" onchange="alterarApiVincular()"> Buscar na API (Recomendado)</label>
+                    <label><input type="radio" name="apiVincular" value="api" onchange="alterarApiVincular()"> Buscar na
+                        API (Recomendado)</label>
                 </div>
 
                 <!-- Select das APIs para vincular -->
@@ -127,9 +131,10 @@
             </div>
         </div>
 
-
-        <button type="submit">Adicionar Anime</button>
-        <button type="button" onclick="resetarFormulario()" id="reset">Reset</button>
+        <div class="divButton">
+            <button type="submit">Adicionar Anime</button>
+            <button type="button" onclick="resetarFormulario()" id="reset">Reset</button>
+        </div>
     </form>
     <div id="status"></div>
 </div>

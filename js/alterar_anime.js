@@ -273,6 +273,9 @@ if (alterarForm) {
                         const generosIngles = jikanData.genres?.map(g => g.name) || [];
                         generos = traduzirGeneros(generosIngles);
                         malId = jikanData.mal_id;
+                    } else {
+                        // Se não há seleção do Jikan, mantém os gêneros originais do banco
+                        generos = animeAtual.generos || [];
                     }
 
                     // Determina qual imagem usar

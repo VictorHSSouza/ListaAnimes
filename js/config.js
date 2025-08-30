@@ -3,6 +3,7 @@
 // These values are meant to be public and identify your Firebase project
 // Security is handled by Firebase Security Rules, not by hiding config
 const firebaseConfig = {
+    // amazonq-ignore-next-line
     apiKey: "AIzaSyDYjQHR5D9R6-NeI2F1rKHcE96awGqH6to",
     authDomain: "listaanimes-ace11.firebaseapp.com",
     projectId: "listaanimes-ace11",
@@ -12,4 +13,7 @@ const firebaseConfig = {
     measurementId: "G-53EZCLPMZD"
 };
 
-export { firebaseConfig };
+// Authorized email for admin access
+const AUTHORIZED_EMAIL = 'victorhenriquesantanasouza@gmail.com';
+
+export { firebaseConfig, AUTHORIZED_EMAIL };

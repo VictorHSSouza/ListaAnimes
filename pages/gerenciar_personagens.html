@@ -18,17 +18,44 @@
         </div>
     </div>
     <form id="personagemForm">
-        <input type="text" id="nome" placeholder="Nome do personagem" required><br>
-        <input type="text" id="anime" placeholder="Anime de origem" required><br>
-        <textarea id="descricao" placeholder="Descrição do personagem" rows="3" required></textarea><br>
+        <select id="animeSelect" required>
+            <option value="">Carregando animes...</option>
+        </select>
+        <small>Selecione um anime para continuar</small>
 
-        <button type="submit">Adicionar Personagem</button>
-        <button type="button" onclick="resetarFormulario()" id="reset">Reset</button>
+        <div id="carregandoPersonagens" style="display: none;">
+            <div class="warning">⏳ Carregando personagens...</div>
+        </div>
+        
+        <div id="restanteFormulario" style="display: none;">
+            <select id="personagemSelect" required>
+                <option value="">Primeiro selecione um anime</option>
+            </select>
+            <small>Selecione um personagem da API ou digite um nome personalizado</small>
+
+            <input type="text" id="nome" placeholder="Nome do personagem" required>
+            <small>Digite o nome do personagem</small>
+            
+            <textarea id="descricao" placeholder="Descrição do personagem" rows="3" required></textarea>
+            <small>Adicione uma descrição para o personagem</small>
+
+            <div id="imagemPersonagemOpcoes" style="display: none;">
+                <select id="imagemPersonagemSelect" required>
+                    <option value="">Selecione uma imagem...</option>
+                </select>
+                <small>Escolha uma imagem para o personagem</small>
+            </div>
+
+            <div class="divButton">
+                <button type="submit">Adicionar Personagem</button>
+                <button type="button" onclick="resetarFormulario()" id="reset">Reset</button>
+            </div>
+        </div>
     </form>
     <div id="status"></div>
 </div>
 
 <!-- Lista de personagens -->
-<h2>Lista de Personagens</h2>
+<h2><a href="#gerenciar_personagens">Lista de Personagens</a></h2>
 <div id="loading" class="loading">Carregando...</div>
 <div id="personagens"></div>

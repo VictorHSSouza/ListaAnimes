@@ -21,6 +21,7 @@ window.firebaseApp = app;
 window.firebaseAuth = auth;
 window.auth = auth; // Para compatibilidade com router
 window.db = db; // Para uso nos outros scripts
+window.firebaseConfig = firebaseConfig; // Para acesso ao projectId
 
 // Função para controlar dropdown
 window.toggleDropdown = () => {

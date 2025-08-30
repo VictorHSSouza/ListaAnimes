@@ -511,6 +511,44 @@ button:not(.select2-selection__clear):hover {
     opacity: 0;
 }
 
+/* Estilos para imagens no Select2 */
+.select2-results__option img,
+.select2-selection__rendered img {
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
+    border: 2px solid #ddd;
+    background: white;
+}
+
+.select2-results__option {
+    padding: 8px 12px !important;
+    display: flex;
+    align-items: center;
+}
+
+.select2-selection__rendered {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.select2-container--default .select2-results__option--highlighted {
+    background-color: #f0f8ff !important;
+    color: #333 !important;
+}
+
+.select2-results__option div {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.select2-selection__rendered div {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
 #toggleComentarios {
     text-decoration: none;
     padding: 10px 20px;
@@ -667,6 +705,38 @@ button:not(.select2-selection__clear):hover {
     border-radius: 5px;
 }
 
+.warning {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 10px;
+    margin-top: 10px;
+    margin-left: 5px;
+    border-radius: 5px;
+}
+
+.info {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+/* Animação para mensagens de confirmação */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .google-btn {
     background: #db4437 !important;
     display: flex;
@@ -707,6 +777,32 @@ button:not(.select2-selection__clear):hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+#animeForm, #personagemForm, #restanteFormulario{
+    display: flex;
+    flex-direction: column;
+}
+
+#personagemForm{
+    margin-left: 5px;
+}
+
+#restanteFormulario{
+    margin-top: 3px;
+}
+
+#personagemForm select, #personagemForm input, #personagemForm textarea{
+    margin-left: 0px;
+}
+
+#personagemForm select{
+    padding: 7.2px;
+}
+
+#imagemPersonagemOpcoes{
+    flex-direction: column;
+    margin: 5px 0;
 }
 
 textarea {
@@ -1275,6 +1371,11 @@ textarea {
     .admin-header h2 {
         margin: 0 5px;
         font-size: 20px;
+    }
+
+    .info {
+        margin: 10px 0;
+        font-size: 12px;
     }
 
     .admin-header div .logout-btn {

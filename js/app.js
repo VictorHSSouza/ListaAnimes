@@ -350,8 +350,10 @@ async function carregarAnimes() {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('animes').innerHTML = `
             <div class="anime" style="background-color: #ffe6e6; border-color: #ff9999;">
-                <h3>Erro Firebase</h3>
-                <p><strong>Detalhes:</strong> ${error.message}</p>
+                <div>
+                    <h3>Erro Firebase</h3>
+                    <p><strong>Detalhes:</strong> ${error.message}</p>
+                </div>
             </div>
         `;
     }
