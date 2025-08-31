@@ -407,6 +407,13 @@ function exibirAnimes(animes) {
     const isAuthorized = user && user.email === EMAIL_AUTORIZADO;
 
     container.innerHTML = '';
+    
+    // Verifica se não há resultados
+    if (animesFiltrados.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; font-size: 18px; margin: 40px 0;">Nenhum anime correspondente</p>';
+        return;
+    }
+    
     animesFiltrados.forEach(anime => {
 
         const div = document.createElement('div');
@@ -1160,6 +1167,18 @@ window.toggleFiltros = () => {
     const isVisible = filtrosAvancados.style.display !== 'none';
     filtrosAvancados.style.display = isVisible ? 'none' : 'flex';
 };
+
+// Fecha filtros ao clicar fora
+document.addEventListener('click', (event) => {
+    const filtrosAvancados = document.getElementById('filtrosAvancados');
+    const toggleButton = document.getElementById('toggleFiltros');
+    
+    if (filtrosAvancados && filtrosAvancados.style.display !== 'none') {
+        if (!filtrosAvancados.contains(event.target) && event.target !== toggleButton) {
+            filtrosAvancados.style.display = 'none';
+        }
+    }
+});
 
 // Função para limpar todos os filtros
 window.limparFiltros = () => {

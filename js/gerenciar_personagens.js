@@ -436,7 +436,7 @@ async function carregarPersonagensSelect() {
         }
 
         // Libera Select2 imediatamente e carrega dados em background
-        if (data.data.length > 30) {
+        if (data.data.length > 15) {
             loadOrCacheCharacterDataAsync(malId, data.data);
         } else {
             loadCharacterNicknamesAsync(data.data);
