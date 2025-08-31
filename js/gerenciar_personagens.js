@@ -85,15 +85,15 @@ async function adicionarPersonagem() {
         let imagemUrl = '';
         let jikanId = null;
         let aboutPersonagem = '';
-        
+
         if (selectedOption && selectedOption.dataset.image) {
             imagemUrl = selectedOption.dataset.image;
         }
-        
+
         if (selectedOption && selectedOption.dataset.jikanId) {
             jikanId = parseInt(selectedOption.dataset.jikanId);
         }
-        
+
         if (selectedOption && selectedOption.dataset.about) {
             aboutPersonagem = selectedOption.dataset.about;
         }
@@ -102,13 +102,13 @@ async function adicionarPersonagem() {
             nome: nome,
             descricao: descricao || aboutPersonagem
         };
-        
+
         // Pega imagem selecionada
         const imagemPersonagemSelect = document.getElementById('imagemPersonagemSelect');
         if (imagemPersonagemSelect && imagemPersonagemSelect.value) {
             imagemUrl = imagemPersonagemSelect.value;
         }
-        
+
         // Adiciona campos opcionais apenas se existirem
         if (imagemUrl) personagemData.imagem = imagemUrl;
         if (jikanId) personagemData.jikan_id = jikanId;
@@ -116,26 +116,26 @@ async function adicionarPersonagem() {
         // Busca o anime no Firebase
         const animeDocRef = doc(db, 'animes', animeId);
         const animeDoc = await getDoc(animeDocRef);
-        
+
         if (!animeDoc.exists()) {
             throw new Error('Anime não encontrado!');
         }
-        
+
         const animeData = animeDoc.data();
         const personagensExistentes = animeData.personagens || [];
-        
+
         // Adiciona o novo personagem ao array
         personagensExistentes.push(personagemData);
-        
+
         // Atualiza o documento do anime
         await updateDoc(animeDocRef, {
             personagens: personagensExistentes
         });
 
         carregarPersonagens();
-        
+
         resetarFormulario();
-        
+
         // Mostra mensagem apenas após resetar o formulário
         document.getElementById('status').innerHTML = '<div class="success">✅ Personagem adicionado com sucesso!</div>';
 
@@ -198,7 +198,7 @@ function exibirPersonagens(personagens) {
     container.innerHTML = '';
     personagens.forEach(personagem => {
         const div = document.createElement('div');
-        div.className = 'anime';
+        div.className = 'personagem-item';
 
         // Sanitiza dados antes de inserir no DOM
         const nomeSeguro = personagem.nome ? personagem.nome.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
@@ -207,15 +207,95 @@ function exibirPersonagens(personagens) {
         const imagemUrl = personagem.imagem || '';
 
         div.innerHTML = `
-            ${imagemUrl ? `<img src="${imagemUrl}" class="anime-image" onerror="this.style.display='none'">` : ''}
-            <div class="anime-content">
-                <h3>${nomeSeguro}</h3>
-                <p><strong>Anime:</strong> ${animeSeguro}</p>
-                <p><strong>Descrição:</strong> ${descricaoSegura}</p>
+            <div>
+                <img src="${imagemUrl}" alt="${nomeSeguro}" class="personagem-imagem-lista"> 
+            </div>
+            <div class="personagem-texto-lista">
+                <span class="personagem-nome-lista">${nomeSeguro}</span>
+                <span class="personagem-anime-lista">${animeSeguro}</span>
             </div>
         `;
+
+        // Adiciona eventos de hover
+        div.addEventListener('mouseenter', (e) => {
+            mostrarHoverCard(e, {
+                nome: nomeSeguro,
+                anime: animeSeguro,
+                descricao: descricaoSegura,
+                imagem: imagemUrl
+            });
+        });
+
+        div.addEventListener('mousemove', (e) => {
+            moverHoverCard(e);
+        });
+
+        div.addEventListener('mouseleave', () => {
+            esconderHoverCard();
+        });
+
         container.appendChild(div);
     });
+}
+
+// Funções para o hover card
+function mostrarHoverCard(e, personagem) {
+    const hoverCard = document.getElementById('personagemHoverCard');
+    const cardImage = document.getElementById('hoverCardImage');
+    const cardNome = document.getElementById('hoverCardNome');
+    const cardAnime = document.getElementById('hoverCardAnime');
+    const cardDescricao = document.getElementById('hoverCardDescricao');
+
+    cardNome.textContent = personagem.nome;
+    cardAnime.textContent = personagem.anime;
+    cardDescricao.textContent = personagem.descricao;
+
+    if (personagem.imagem) {
+        cardImage.src = personagem.imagem;
+        cardImage.style.display = 'block';
+    } else {
+        cardImage.style.display = 'none';
+    }
+
+    hoverCard.style.display = 'block';
+    moverHoverCard(e);
+}
+
+function moverHoverCard(e) {
+    const hoverCard = document.getElementById('personagemHoverCard');
+    const cardWidth = 400; // max-width do card
+    const cardHeight = 200; // altura aproximada do card
+
+    let left = e.pageX + 20;
+    let right = 'auto';
+    let top = e.pageY;
+    let bottom = 'auto';
+
+    // Verifica se o card sairia da tela na direita
+    if ((window.innerWidth - 10) / 2 < e.pageX) {
+        left = 'auto';
+        right = window.innerWidth - e.pageX + 'px';
+    } else {
+        left = left + 'px'
+    }
+
+    // Verifica se o card sairia da tela na parte inferior
+    if (top + cardHeight + 35 > window.innerHeight + window.scrollY) {
+        top = 'auto';
+        bottom = window.innerHeight - e.pageY + 'px';
+    } else {
+        top = top + 'px';
+    }
+
+    hoverCard.style.left = left;
+    hoverCard.style.right = right;
+    hoverCard.style.top = top;
+    hoverCard.style.bottom = bottom;
+}
+
+function esconderHoverCard() {
+    const hoverCard = document.getElementById('personagemHoverCard');
+    hoverCard.style.display = 'none';
 }
 
 // Função para resetar formulário
@@ -228,13 +308,13 @@ window.resetarFormulario = () => {
     if (nome) nome.value = '';
     if (animeSelect) animeSelect.selectedIndex = 0;
     if (descricao) descricao.value = '';
-    
+
     // Reset Select2 do personagem
     if (typeof $ !== 'undefined' && $('#personagemSelect').hasClass('select2-hidden-accessible')) {
         $('#personagemSelect').select2('destroy');
     }
     $('#personagemSelect').empty().append('<option value="">Primeiro selecione um anime</option>');
-    
+
     // Reset select de imagem
     if (typeof $ !== 'undefined' && $('#imagemPersonagemSelect').hasClass('select2-hidden-accessible')) {
         $('#imagemPersonagemSelect').select2('destroy');
@@ -242,11 +322,11 @@ window.resetarFormulario = () => {
     $('#imagemPersonagemSelect').empty().append('<option value="">Selecione uma imagem...</option>');
     document.getElementById('imagemPersonagemOpcoes').style.display = 'none';
     document.getElementById('imagemPersonagemSelect').required = false;
-    
+
     // Remove mensagens informativas
     const infoMessages = restanteFormulario.querySelectorAll('.info');
     infoMessages.forEach(msg => msg.remove());
-    
+
     // Oculta o restante do formulário
     restanteFormulario.style.display = 'none';
 
@@ -261,16 +341,16 @@ async function carregarAnimesSelect() {
     try {
         const querySnapshot = await getDocs(collection(db, "animes"));
         const animeSelect = document.getElementById('animeSelect');
-        
+
         animeSelect.innerHTML = '<option value="">Selecione um anime...</option>';
-        
+
         const animes = [];
         querySnapshot.forEach((doc) => {
             animes.push({ id: doc.id, ...doc.data() });
         });
-        
+
         animes.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
-        
+
         animes.forEach(anime => {
             const option = document.createElement('option');
             option.value = anime.id;
@@ -278,10 +358,10 @@ async function carregarAnimesSelect() {
             option.dataset.malId = anime.mal_id;
             animeSelect.appendChild(option);
         });
-        
+
         // Adiciona evento para carregar personagens
         animeSelect.addEventListener('change', carregarPersonagensSelect);
-        
+
     } catch (error) {
         console.error('Erro ao carregar animes:', error);
     }
@@ -295,7 +375,7 @@ async function carregarPersonagensSelect() {
     const animeId = animeSelect.value;
     const restanteFormulario = document.getElementById('restanteFormulario');
     const carregandoPersonagens = document.getElementById('carregandoPersonagens');
-    
+
     if (!malId || malId === 'undefined') {
         if ($('#personagemSelect').hasClass('select2-hidden-accessible')) {
             $('#personagemSelect').select2('destroy');
@@ -306,11 +386,11 @@ async function carregarPersonagensSelect() {
         restanteFormulario.style.display = 'flex';
         return;
     }
-    
+
     // Mostra mensagem de carregamento
     carregandoPersonagens.style.display = 'block';
     restanteFormulario.style.display = 'none';
-    
+
     try {
         // 1. Busca personagens já cadastrados no anime
         const animeDocRef = doc(db, 'animes', animeId);
@@ -319,34 +399,34 @@ async function carregarPersonagensSelect() {
         const jikanIdsCadastrados = personagensCadastrados
             .filter(p => p.jikan_id)
             .map(p => p.jikan_id);
-        
+
         // 2. Busca lista de personagens do anime na API
         const response = await fetch(`https://api.jikan.moe/v4/anime/${malId}/characters`);
         const data = await response.json();
-        
+
         // Verifica se a resposta tem dados válidos
         if (!data.data || !Array.isArray(data.data)) {
             throw new Error('Dados inválidos da API');
         }
-        
+
         // 3. Filtra personagens já cadastrados
-        data.data = data.data.filter(char => 
+        data.data = data.data.filter(char =>
             !jikanIdsCadastrados.includes(char.character.mal_id)
         );
-        
+
         // Destroi Select2 anterior se existir
         if ($('#personagemSelect').hasClass('select2-hidden-accessible')) {
             $('#personagemSelect').select2('destroy');
         }
-        
+
         // Limpa e popula o select
         const personagemSelect = document.getElementById('personagemSelect');
         personagemSelect.innerHTML = '<option value="">Selecione um personagem...</option>';
-        
+
         // Armazena dados básicos e IDs já cadastrados
         window.animeCharacters = data;
         window.jikanIdsCadastrados = jikanIdsCadastrados;
-        
+
         // Verifica se há personagens disponíveis
         if (data.data.length === 0) {
             personagemSelect.innerHTML = '<option value="">Todos os personagens já foram cadastrados</option>';
@@ -354,17 +434,17 @@ async function carregarPersonagensSelect() {
             restanteFormulario.style.display = 'flex';
             return;
         }
-        
+
         // Libera Select2 imediatamente e carrega dados em background
         if (data.data.length > 30) {
             loadOrCacheCharacterDataAsync(malId, data.data);
         } else {
             loadCharacterNicknamesAsync(data.data);
         }
-        
+
         // Torna o campo obrigatório quando há integração com API
         document.getElementById('personagemSelect').required = true;
-        
+
         // Inicializa Select2 com busca dinâmica e imagens
         $('#personagemSelect').select2({
             placeholder: 'Digite para buscar personagens...',
@@ -377,18 +457,18 @@ async function carregarPersonagensSelect() {
                     const term = params.data.term ? params.data.term.toLowerCase() : '';
                     const filteredChars = window.animeCharacters.data.filter(char => {
                         const nameMatch = char.character.name.toLowerCase().includes(term);
-                        
+
                         // Busca também nos nicknames se já carregados
                         let nicknameMatch = false;
                         if (char.fullData && char.fullData.nicknames) {
-                            nicknameMatch = char.fullData.nicknames.some(nickname => 
+                            nicknameMatch = char.fullData.nicknames.some(nickname =>
                                 nickname.toLowerCase().includes(term)
                             );
                         }
-                        
+
                         return nameMatch || nicknameMatch;
                     });
-                    
+
                     setTimeout(() => {
                         success({
                             results: filteredChars.slice(0, 10).map(char => {
@@ -397,7 +477,7 @@ async function carregarPersonagensSelect() {
                                     displayText += ` (${char.fullData.nicknames[0]})`;
                                 }
                                 displayText += ` - ${char.role}`;
-                                
+
                                 return {
                                     id: char.character.mal_id,
                                     text: displayText,
@@ -411,12 +491,12 @@ async function carregarPersonagensSelect() {
             },
             minimumInputLength: 1
         });
-        
+
         // Evento quando personagem é selecionado
         $('#personagemSelect').on('select2:select', async function (e) {
             const selectedData = e.params.data;
             if (!selectedData.character) return;
-            
+
             try {
                 // Busca dados completos se ainda não tem
                 if (!selectedData.character.fullData) {
@@ -424,36 +504,36 @@ async function carregarPersonagensSelect() {
                     const fullData = await response.json();
                     selectedData.character.fullData = fullData.data;
                 }
-                
+
                 // Atualiza o campo nome
                 document.getElementById('nome').value = selectedData.character.fullData.name;
-                
+
                 // Armazena dados no select para uso posterior
                 const option = $(this).find('option:selected');
                 option.attr('data-image', selectedData.character.fullData.images?.jpg?.image_url || '');
                 option.attr('data-jikan-id', selectedData.character.fullData.mal_id);
                 option.attr('data-role', selectedData.character.role);
                 option.attr('data-about', selectedData.character.fullData.about || '');
-                
+
                 // Carrega imagens do personagem
                 await carregarImagensPersonagem(selectedData.character.fullData.mal_id);
-                
+
             } catch (error) {
                 console.error('Erro ao buscar dados completos:', error);
                 document.getElementById('nome').value = selectedData.character.character.name;
             }
         });
-        
 
-        
+
+
         // Esconde carregamento e mostra o restante do formulário imediatamente
         carregandoPersonagens.style.display = 'none';
         restanteFormulario.style.display = 'flex';
-        
-        console.log(`✅ Select2 liberado! ${data.data.length} personagens disponíveis (${jikanIdsCadastrados.length} já cadastrados foram filtrados)`);
-        
 
-        
+        console.log(`✅ Select2 liberado! ${data.data.length} personagens disponíveis (${jikanIdsCadastrados.length} já cadastrados foram filtrados)`);
+
+
+
     } catch (error) {
         console.error('Erro ao carregar personagens:', error);
         const personagemSelect = document.getElementById('personagemSelect');
@@ -467,12 +547,12 @@ function loadOrCacheCharacterDataAsync(malId, characters) {
     (async () => {
         try {
             const cacheDoc = await getDoc(doc(db, 'personagens_grandes', malId.toString()));
-            
+
             if (cacheDoc.exists()) {
                 console.log('💾 Cache encontrado! Verificando completude...');
                 const cachedData = cacheDoc.data();
                 const missingChars = [];
-                
+
                 characters.forEach(char => {
                     const cached = cachedData.personagens.find(p => p.mal_id === char.character.mal_id);
                     if (cached) {
@@ -481,7 +561,7 @@ function loadOrCacheCharacterDataAsync(malId, characters) {
                         missingChars.push(char);
                     }
                 });
-                
+
                 if (missingChars.length > 0) {
                     console.log(`🔄 Cache incompleto. Carregando ${missingChars.length} personagens restantes...`);
                     await loadMissingCharacters(missingChars, malId, cachedData);
@@ -502,15 +582,15 @@ function loadOrCacheCharacterDataAsync(malId, characters) {
 // Função para carregar da API e salvar incrementalmente
 async function loadAndSaveCharacterDataIncremental(malId, characters) {
     const characterData = [];
-    
+
     for (let i = 0; i < characters.length; i++) {
         const char = characters[i];
         try {
             const response = await fetch(`https://api.jikan.moe/v4/characters/${char.character.mal_id}`);
             const fullData = await response.json();
-            
+
             char.fullData = fullData.data;
-            
+
             characterData.push({
                 mal_id: fullData.data.mal_id,
                 name: fullData.data.name,
@@ -518,19 +598,19 @@ async function loadAndSaveCharacterDataIncremental(malId, characters) {
                 images: fullData.data.images,
                 about: fullData.data.about || ''
             });
-            
+
             // Salva a cada 10 personagens
             if ((i + 1) % 10 === 0 || i === characters.length - 1) {
                 await saveCharacterBatch(malId, characterData, i + 1, characters.length);
                 console.log(`💾 Lote ${Math.ceil((i + 1) / 10)} salvo (${i + 1}/${characters.length})`);
             }
-            
+
             await new Promise(resolve => setTimeout(resolve, 150));
         } catch (error) {
             console.error(`Erro ao carregar ${char.character.name}:`, error);
         }
     }
-    
+
     console.log('✅ Todos os dados carregados e salvos incrementalmente!');
 }
 
@@ -539,11 +619,11 @@ function formatCharacterResult(character) {
     if (character.loading) {
         return character.text;
     }
-    
+
     if (!character.image) {
         return $(`<span>${character.text}</span>`);
     }
-    
+
     return $(`
         <div style="display: flex; align-items: center; padding: 5px;">
             <img src="${character.image}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; margin-right: 10px;" onerror="this.style.display='none'">
@@ -575,23 +655,23 @@ async function saveCharacterBatch(malId, characterData, currentIndex, total) {
 async function loadMissingCharacters(missingChars, malId, cachedData) {
     console.log(`🔍 Iniciando carregamento de ${missingChars.length} personagens faltantes`);
     const characterData = [];
-    
+
     for (let i = 0; i < missingChars.length; i++) {
         const char = missingChars[i];
-        
+
         try {
             const charMalId = char.character?.mal_id || char.mal_id;
-            
+
             if (!charMalId) {
                 console.warn(`⚠️ Personagem sem mal_id:`, char);
                 continue;
             }
-            
+
             const response = await fetch(`https://api.jikan.moe/v4/characters/${charMalId}`);
             const fullData = await response.json();
-            
+
             char.fullData = fullData.data;
-            
+
             characterData.push({
                 mal_id: fullData.data.mal_id,
                 name: fullData.data.name,
@@ -599,7 +679,7 @@ async function loadMissingCharacters(missingChars, malId, cachedData) {
                 images: fullData.data.images,
                 about: fullData.data.about || ''
             });
-            
+
             // Salva a cada 10 personagens
             if ((i + 1) % 10 === 0 || i === missingChars.length - 1) {
                 const allCharacters = [...cachedData.personagens, ...characterData];
@@ -607,13 +687,13 @@ async function loadMissingCharacters(missingChars, malId, cachedData) {
                 console.log(`📊 Progresso: ${i + 1}/${missingChars.length} personagens processados`);
                 console.log(`✅ Adicionados ao banco com sucesso`);
             }
-            
+
             await new Promise(resolve => setTimeout(resolve, 150));
         } catch (error) {
             console.error(`❌ Erro ao carregar ${char.character?.name || char.name}:`, error);
         }
     }
-    
+
     console.log(`✅ Carregamento concluído! ${characterData.length} personagens carregados com sucesso`);
     return characterData;
 }
@@ -622,25 +702,25 @@ async function loadMissingCharacters(missingChars, malId, cachedData) {
 function loadCharacterNicknamesAsync(characters) {
     (async () => {
         console.log(`Carregando nicknames de ${characters.length} personagens...`);
-        
+
         for (let i = 0; i < characters.length; i++) {
             const char = characters[i];
             try {
                 const response = await fetch(`https://api.jikan.moe/v4/characters/${char.character.mal_id}`);
                 const fullData = await response.json();
-                
+
                 char.fullData = fullData.data;
-                
+
                 if ((i + 1) % 10 === 0) {
                     console.log(`Progresso: ${i + 1}/${characters.length} personagens carregados`);
                 }
-                
+
                 await new Promise(resolve => setTimeout(resolve, 150));
             } catch (error) {
                 console.error(`Erro ao carregar dados de ${char.character.name}:`, error);
             }
         }
-        
+
         console.log('✅ Todos os nicknames carregados! Busca por apelidos disponível.');
     })();
 }
@@ -650,18 +730,18 @@ async function carregarImagensPersonagem(jikanId) {
     try {
         const response = await fetch(`https://api.jikan.moe/v4/characters/${jikanId}/pictures`);
         const data = await response.json();
-        
+
         const imagemSelect = document.getElementById('imagemPersonagemSelect');
         const imagemOpcoes = document.getElementById('imagemPersonagemOpcoes');
-        
+
         if (!imagemSelect || !data.data || data.data.length === 0) {
             imagemOpcoes.style.display = 'none';
             return;
         }
-        
+
         // Limpa e popula o select
         imagemSelect.innerHTML = '<option value="">Selecione uma imagem...</option>';
-        
+
         data.data.forEach((picture, index) => {
             const option = document.createElement('option');
             option.value = picture.jpg.image_url;
@@ -669,20 +749,20 @@ async function carregarImagensPersonagem(jikanId) {
             option.dataset.imageUrl = picture.jpg.image_url;
             imagemSelect.appendChild(option);
         });
-        
+
         // Inicializa Select2 com imagens
         if (typeof $ !== 'undefined') {
             if ($('#imagemPersonagemSelect').hasClass('select2-hidden-accessible')) {
                 $('#imagemPersonagemSelect').select2('destroy');
             }
-            
+
             $('#imagemPersonagemSelect').select2({
                 placeholder: 'Selecione uma imagem...',
                 allowClear: true,
-                templateResult: function(option) {
+                templateResult: function (option) {
                     if (option.loading) return option.text;
                     if (!option.element || !option.element.dataset.imageUrl) return $(`<div>${option.text}</div>`);
-                    
+
                     return $(`
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <img src="${option.element.dataset.imageUrl}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;" onerror="this.style.display='none'">
@@ -690,15 +770,15 @@ async function carregarImagensPersonagem(jikanId) {
                         </div>
                     `);
                 },
-                templateSelection: function(option) {
+                templateSelection: function (option) {
                     return option.text;
                 }
             });
         }
-        
+
         imagemOpcoes.style.display = 'flex';
         imagemSelect.required = true;
-        
+
     } catch (error) {
         console.error('Erro ao carregar imagens do personagem:', error);
         document.getElementById('imagemPersonagemOpcoes').style.display = 'none';

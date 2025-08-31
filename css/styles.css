@@ -369,7 +369,7 @@ select {
     flex-direction: column;
 }
 
-#opcoesVincular{
+#opcoesVincular {
     margin-bottom: 10px;
 }
 
@@ -731,6 +731,7 @@ button:not(.select2-selection__clear):hover {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -779,30 +780,141 @@ button:not(.select2-selection__clear):hover {
     align-items: center;
 }
 
-#animeForm, #personagemForm, #restanteFormulario{
+#animeForm,
+#personagemForm,
+#restanteFormulario {
     display: flex;
     flex-direction: column;
 }
 
-#personagemForm{
+#personagemForm {
     margin-left: 5px;
 }
 
-#restanteFormulario{
+#restanteFormulario {
     margin-top: 3px;
 }
 
-#personagemForm select, #personagemForm input, #personagemForm textarea{
+#personagemForm select,
+#personagemForm input,
+#personagemForm textarea {
     margin-left: 0px;
 }
 
-#personagemForm select{
+#personagemForm select {
     padding: 7.2px;
 }
 
-#imagemPersonagemOpcoes{
+#imagemPersonagemOpcoes {
     flex-direction: column;
     margin: 5px 0;
+}
+
+/* Estilos para lista de personagens */
+#personagens {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.personagem-item {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 12px 15px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    gap: 20px;
+}
+
+.personagem-item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+}
+
+.personagem-item>div{
+    display: flex;
+}
+
+.personagem-item:hover {
+    background-color: #f0f8ff;
+    border-color: #007cba;
+}
+
+.personagem-texto-lista {
+    justify-content: space-between;
+    width: 100%;
+}
+
+.personagem-nome-lista {
+    font-weight: bold;
+    color: #333;
+    flex: 1;
+}
+
+.personagem-anime-lista {
+    color: #007cba;
+    font-size: 14px;
+    text-align: right;
+    flex: 1;
+}
+
+.personagem-imagem-lista {
+    height: 40px !important;
+    width: 40px !important;
+    object-fit: cover;
+    align-self: center;
+}
+
+/* Hover card */
+.personagem-hover-card {
+    position: absolute;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: auto;
+    max-width: 400px;
+    pointer-events: none;
+}
+
+.hover-card-content {
+    display: flex;
+    padding: 15px;
+    gap: 15px;
+}
+
+.hover-card-image {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.hover-card-info {
+    flex: 1;
+}
+
+.hover-card-info h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.hover-card-info p {
+    margin: 0 0 5px 0;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.hover-card-info p:first-of-type {
+    color: #007cba;
+    font-weight: bold;
 }
 
 textarea {
@@ -1124,6 +1236,7 @@ textarea {
         display: flex;
         justify-content: center;
     }
+
     .dropdown-content {
         right: 0;
         width: 200px;
@@ -1302,7 +1415,7 @@ textarea {
     #generoJikan {
         margin-left: 0;
     }
-    
+
     #imagemSelect {
         width: 100% !important;
     }
@@ -1466,5 +1579,39 @@ textarea {
 
     .chart-ordena {
         margin-left: 5px;
+    }
+
+    #personagens {
+        grid-template-columns: 1fr;
+    }
+
+    .personagem-texto-lista {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .personagem-anime-lista {
+        text-align: start;
+    }
+
+    .personagem-imagem-lista {
+        height: max-content !important;
+        width: 50px !important;
+    }
+
+    .personagem-hover-card {
+        max-width: 250px;
+    }
+
+    .hover-card-content {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .hover-card-image {
+        width: 100%;
+        min-height: 80px;
+        max-height: 130px;
+        height: auto;
     }
 }

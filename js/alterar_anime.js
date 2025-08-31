@@ -265,13 +265,18 @@ if (alterarForm) {
                 if (tipoGenero === 'manual') {
                     const generoSelect = document.getElementById('genero');
                     generos = Array.from(generoSelect.selectedOptions).map(option => option.value);
+                    // Mantém mal_id existente quando usar gêneros manuais
+                    malId = animeAtual.mal_id || null;
                 } else if (tipoGenero === 'api') {
                     const animeJikanSelect = document.getElementById('animeJikan');
                     const selectedJikanOption = animeJikanSelect.selectedOptions[0];
                     if (selectedJikanOption && selectedJikanOption.dataset.anime) {
                         const jikanData = JSON.parse(selectedJikanOption.dataset.anime);
                         const generosIngles = jikanData.genres?.map(g => g.name) || [];
-                        generos = traduzirGeneros(generosIngles);
+                        const generosJikan = traduzirGeneros(generosIngles);
+                        
+                        // Só sobrescreve gêneros se não existirem no banco
+                        generos = (animeAtual.generos && animeAtual.generos.length > 0) ? animeAtual.generos : generosJikan;
                         malId = jikanData.mal_id;
                     } else {
                         // Se não há seleção do Jikan, mantém os gêneros originais do banco
@@ -322,11 +327,11 @@ if (alterarForm) {
                     descricao: descricao
                 };
 
-                // Adiciona campos opcionais apenas se não forem undefined
-                if (imagemUrl !== null) updateData.imagem = imagemUrl;
-                if (animeSlug !== null) updateData.anime_slug = animeSlug;
-                if (animeLink !== null) updateData.animeLink = animeLink;
-                if (malId !== null) updateData.mal_id = malId;
+                // Adiciona campos opcionais apenas se não forem null ou undefined
+                if (imagemUrl !== null && imagemUrl !== undefined) updateData.imagem = imagemUrl;
+                if (animeSlug !== null && animeSlug !== undefined) updateData.anime_slug = animeSlug;
+                if (animeLink !== null && animeLink !== undefined) updateData.animeLink = animeLink;
+                if (malId !== null && malId !== undefined) updateData.mal_id = malId;
 
                 await updateDoc(docRef, updateData);
 
@@ -354,12 +359,14 @@ window.alterarTipoGenero = () => {
 
     // Remove required de todos
     document.getElementById('genero').required = false;
+    document.getElementById('genero').removeAttribute('required');
     document.getElementById('animeApi').required = false;
     document.getElementById('animeJikan').required = false;
 
     if (tipoGenero === 'manual') {
         generoManual.style.display = 'flex';
         document.getElementById('genero').required = true;
+        document.getElementById('genero').setAttribute('required', 'required');
     } else if (tipoGenero === 'api') {
         generoApi.style.display = 'flex';
         
