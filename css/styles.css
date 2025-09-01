@@ -853,6 +853,8 @@ button:not(.select2-selection__clear):hover {
 .personagem-texto-lista {
     justify-content: space-between;
     width: 100%;
+    gap: 20px;
+    align-items: center;
 }
 
 .personagem-nome-lista {
@@ -865,7 +867,7 @@ button:not(.select2-selection__clear):hover {
     color: #007cba;
     font-size: 14px;
     text-align: right;
-    flex: 1;
+    flex: 2;
 }
 
 .personagem-imagem-lista {

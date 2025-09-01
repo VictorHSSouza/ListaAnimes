@@ -157,14 +157,24 @@ async function carregarPersonagens() {
         querySnapshot.forEach((doc) => {
             const animeData = doc.data();
             if (animeData.personagens && animeData.personagens.length > 0) {
-                animeData.personagens.forEach(personagem => {
+                animeData.personagens.forEach((personagem, index) => {
                     todosPersonagens.push({
                         ...personagem,
                         animeNome: animeData.nome,
-                        animeId: doc.id
+                        animeId: doc.id,
+                        animeOrdem: animeData.ordem || 0,
+                        personagemIndex: index
                     });
                 });
             }
+        });
+
+        // Ordena por ordem do anime, depois por índice de inserção do personagem
+        todosPersonagens.sort((a, b) => {
+            if (a.animeOrdem !== b.animeOrdem) {
+                return a.animeOrdem - b.animeOrdem;
+            }
+            return a.personagemIndex - b.personagemIndex;
         });
 
         document.getElementById('loading').style.display = 'none';
