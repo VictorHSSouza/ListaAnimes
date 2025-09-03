@@ -4,7 +4,7 @@
 // Security is handled by Firebase Security Rules, not by hiding config
 const firebaseConfig = {
     // amazonq-ignore-next-line
-    apiKey: "AIzaSyDYjQHR5D9R6-NeI2F1rKHcE96awGqH6to",
+    apiKey: "AIzaSyClZNdgFpmLYtY49WAexEj2U1czTTdNlMU",
     authDomain: "listaanimes-ace11.firebaseapp.com",
     projectId: "listaanimes-ace11",
     storageBucket: "listaanimes-ace11.firebasestorage.app",

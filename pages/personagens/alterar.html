@@ -1,0 +1,35 @@
+<h1>Alterar Personagem</h1>
+
+<!-- Login -->
+<div id="loginForm" class="form-container">
+    <h2>Login do Administrador</h2>
+    <button onclick="loginComGoogle()" class="google-btn">
+        <span>🔑</span> Entrar com Google
+    </button>
+    <div id="loginStatus"></div>
+</div>
+
+<!-- Formulário para alterar personagem -->
+<div id="adminPanel" class="form-container" style="display: none;">
+    <div class="admin-header">
+        <h2>Alterar Personagem</h2>
+        <div>
+            <button onclick="sair(); return false" class="logout-btn">Sair</button>
+        </div>
+    </div>
+    <form id="alterarPersonagemForm">
+        <input type="hidden" id="animeId">
+        <input type="hidden" id="personagemIndex">
+        <input type="text" id="nome" placeholder="Nome do personagem" required><br>
+        <textarea id="descricao" placeholder="Descrição do personagem" rows="4" required></textarea><br>
+        
+        <div id="imagemPersonagemOpcoes" style="display: none;">
+            <select id="imagemPersonagemSelect"></select>
+            <small>Escolha a imagem do personagem (opcional)</small>
+        </div>
+
+        <button type="submit">Salvar Alterações</button>
+        <button type="button" onclick="window.goBack ? window.goBack() : navigateTo('gerenciar_personagens')" class="btn-voltar">Voltar</button>
+    </form>
+    <div id="status"></div>
+</div>

@@ -4,11 +4,13 @@ class Router {
         this.routes = {
             '': 'pages/home.html',
             'index': 'pages/home.html',
-            'gerenciar': 'pages/gerenciar_animes.html',
-            'gerenciar_animes': 'pages/gerenciar_animes.html',
-            'gerenciar_personagens': 'pages/gerenciar_personagens.html',
-            'alterar': 'pages/alterar.html',
-            'detalhes': 'pages/detalhes.html',
+            'gerenciar': 'pages/animes/gerenciar_animes.html',
+            'gerenciar_animes': 'pages/animes/gerenciar_animes.html',
+            'gerenciar_personagens': 'pages/personagens/gerenciar_personagens.html',
+            'alterar': 'pages/animes/alterar.html',
+            'alterar_personagem': 'pages/personagens/alterar.html',
+            'detalhes': 'pages/animes/detalhes.html',
+            'detalhes_personagem': 'pages/personagens/detalhes.html',
             'outros': 'pages/outros.html',
             'estatisticas': 'pages/estatisticas.html'
         };
@@ -40,9 +42,10 @@ class Router {
                 // Usa onAuthStateChanged para aguardar estado real
                 const { onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
                 
+                const { AUTHORIZED_EMAIL } = await import('./config.js');
                 const unsubscribe = onAuthStateChanged(window.auth, (user) => {
                     unsubscribe();
-                    const isAuthorized = user && user.email === 'victorhenriquesantanasouza@gmail.com';
+                    const isAuthorized = user && user.email === AUTHORIZED_EMAIL;
                     resolve(isAuthorized);
                 });
                 
@@ -65,7 +68,7 @@ class Router {
         const route = this.routes[path] || this.routes[''];
         
         // Verifica se é página protegida
-        if (path === 'outros' || path === 'alterar' || path === 'gerenciar' || path === 'gerenciar_animes' || path === 'gerenciar_personagens') {
+        if (path === 'outros' || path === 'alterar' || path === 'gerenciar' || path === 'gerenciar_animes' || path === 'gerenciar_personagens' || path === 'alterar_personagem') {
             const isAuthorized = await this.checkAuth();
             if (!isAuthorized) {
                 // Redireciona para home se não autorizado
@@ -110,6 +113,8 @@ class Router {
             'gerenciar_personagens': 'js/gerenciar_personagens.js',
             'alterar': 'js/alterar_anime.js',
             'detalhes': 'js/detalhes.js',
+            'detalhes_personagem': 'js/detalhes_personagem.js',
+            'alterar_personagem': 'js/alterar_personagem.js',
             'outros': 'js/outros.js',
             'estatisticas': 'js/estatisticas.js'
         };
@@ -138,6 +143,8 @@ class Router {
             'gerenciar_personagens': 'Gerenciar Personagens',
             'alterar': 'Alterar Anime',
             'detalhes': 'Detalhes do Anime',
+            'detalhes_personagem': 'Detalhes do Personagem',
+            'alterar_personagem': 'Alterar Personagem',
             'outros': 'Outros - Lista de Animes',
             'estatisticas': 'Estatísticas - Lista de Animes'
         };

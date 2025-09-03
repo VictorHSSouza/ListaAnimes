@@ -1,0 +1,22 @@
+<div id="loading" class="loading">Carregando...</div>
+
+<div id="personagens-anime" style="display: none;">
+    <div class="admin-header">
+        <h1 class="detalhes_titulo" id="animeNome">Carregando...</h1>
+        <div id="div-voltar">
+            <button onclick="window.goBack ? window.goBack() : navigateTo('gerenciar_personagens')" class="btn-voltar">← Voltar</button>
+        </div>
+    </div>
+
+    <div id="personagens" class="personagens-grid">
+        <!-- Personagens serão inseridos aqui -->
+    </div>
+</div>
+
+<div id="personagem-erro" style="display: none;">
+    <div class="danger">❌ Personagem não encontrado!</div>
+    <div id="div-voltar">
+        <button onclick="window.goBack ? window.goBack() : navigateTo('gerenciar_personagens')"
+            class="btn-voltar">Voltar</button>
+    </div>
+</div>

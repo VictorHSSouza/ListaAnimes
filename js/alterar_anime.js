@@ -28,7 +28,7 @@ window.voltarGerenciar = () => {
 };
 
 // Email autorizado
-const EMAIL_AUTORIZADO = 'victorhenriquesantanasouza@gmail.com';
+const EMAIL_AUTORIZADO = AUTHORIZED_EMAIL;
 
 // Monitora estado de autenticação
 onAuthStateChanged(auth, (user) => {

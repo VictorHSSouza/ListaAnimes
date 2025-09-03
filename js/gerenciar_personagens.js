@@ -244,6 +244,14 @@ function exibirPersonagens(personagens) {
             esconderHoverCard();
         });
 
+        // Adiciona evento de clique para visualizar personagem
+        div.addEventListener('click', () => {
+            const nomeEncoded = encodeURIComponent(personagem.nome);
+            if (typeof navigateTo !== 'undefined') {
+                navigateTo(`detalhes_personagem?animeId=${personagem.animeId}&nome=${nomeEncoded}`);
+            }
+        });
+
         container.appendChild(div);
     });
 }

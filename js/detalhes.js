@@ -1,22 +1,12 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { AUTHORIZED_EMAIL } from './config.js';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDYjQHR5D9R6-NeI2F1rKHcE96awGqH6to",
-    authDomain: "listaanimes-ace11.firebaseapp.com",
-    projectId: "listaanimes-ace11",
-    storageBucket: "listaanimes-ace11.firebasestorage.app",
-    messagingSenderId: "670425575167",
-    appId: "1:670425575167:web:b19728f277cf78879966ca",
-    measurementId: "G-53EZCLPMZD"
-};
+// Usa instâncias já inicializadas
+const db = getFirestore();
+const auth = getAuth();
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-const EMAIL_AUTORIZADO = 'victorhenriquesantanasouza@gmail.com';
+const EMAIL_AUTORIZADO = AUTHORIZED_EMAIL;
 
 // Variáveis globais para armazenar dados
 let animeOriginal = null;

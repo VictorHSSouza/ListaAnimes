@@ -1,16 +1,7 @@
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDYjQHR5D9R6-NeI2F1rKHcE96awGqH6to",
-    authDomain: "listaanimes-ace11.firebaseapp.com",
-    projectId: "listaanimes-ace11",
-    storageBucket: "listaanimes-ace11.firebasestorage.app",
-    messagingSenderId: "670425575167",
-    appId: "1:670425575167:web:b19728f277cf78879966ca",
-    measurementId: "G-53EZCLPMZD"
-};
+import { firebaseConfig, AUTHORIZED_EMAIL } from './config.js';
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -108,7 +99,7 @@ onAuthStateChanged(auth, (user) => {
     const logoutBtns = document.querySelectorAll('.logout-only');
     
     adminBtns.forEach(btn => {
-        if (user && user.email === 'victorhenriquesantanasouza@gmail.com') {
+        if (user && user.email === AUTHORIZED_EMAIL) {
             btn.style.display = 'block';
         } else {
             btn.style.display = 'none';

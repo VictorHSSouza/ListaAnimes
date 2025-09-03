@@ -926,6 +926,102 @@ button:not(.select2-selection__clear):hover {
     font-weight: bold;
 }
 
+/* Estilos para collapse de personagens */
+.personagens-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.personagem-collapse {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    max-height: 80px;
+}
+
+.personagem-collapse.expanded {
+    max-height: 500px;
+}
+
+.personagem-collapse-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    cursor: pointer;
+    gap: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.personagem-collapse-header:hover {
+    background-color: #f0f8ff;
+}
+
+.personagem-collapse-mini-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.personagem-collapse-title {
+    flex: 1;
+    font-weight: bold;
+    color: #333;
+}
+
+.personagem-collapse-arrow {
+    font-size: 12px;
+    color: #666;
+    transition: transform 0.3s ease;
+}
+
+.personagem-collapse.expanded .personagem-collapse-arrow {
+    transform: rotate(180deg);
+}
+
+.personagem-collapse-content {
+    padding: 15px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.personagem-collapse-image {
+    width: 120px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.personagem-collapse-info {
+    flex: 1;
+}
+
+.personagem-collapse-info h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.personagem-collapse-info p {
+    margin: 0;
+    color: #666;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.personagem-collapse-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
 textarea {
     width: 600px;
     padding: 8px;
@@ -1672,6 +1768,21 @@ textarea {
         min-height: 80px;
         max-height: 130px;
         height: auto;
+    }
+
+    .personagens-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .personagem-collapse-content {
+        flex-direction: column;
+    }
+
+    .personagem-collapse-image {
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        align-self: center;
     }
 
     .footer {
