@@ -181,17 +181,19 @@ window.toggleCollapse = (index) => {
         collapse.style.height = '80px';
     });
     
-    // Se o collapse clicado não estava aberto, abre ele
+    // Se o collapse clicado não estava aberto, aguarda fechamento e abre ele
     if (targetCollapse && !wasExpanded) {
-        // Calcula altura real do conteúdo
-        targetCollapse.style.height = 'auto';
-        const fullHeight = targetCollapse.scrollHeight + 'px';
-        targetCollapse.style.height = '80px';
-        
-        // Força reflow e aplica altura final
-        targetCollapse.offsetHeight;
-        targetCollapse.classList.add('expanded');
-        targetCollapse.style.height = fullHeight;
+        setTimeout(() => {
+            // Calcula altura real do conteúdo
+            targetCollapse.style.height = 'auto';
+            const fullHeight = targetCollapse.scrollHeight + 'px';
+            targetCollapse.style.height = '80px';
+            
+            // Força reflow e aplica altura final
+            targetCollapse.offsetHeight;
+            targetCollapse.classList.add('expanded');
+            targetCollapse.style.height = fullHeight;
+        }, 80);
     }
 };
 

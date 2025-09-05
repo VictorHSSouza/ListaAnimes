@@ -1073,7 +1073,10 @@ window.toggleComentarios = () => {
     const botao = document.getElementById('toggleComentarios');
     botao.textContent = novoEstado ? 'Desabilitar Comentários' : 'Habilitar Comentários';
 
-    carregarAnimes();
+    // Apenas atualiza a exibição sem recarregar dados
+    if (todosAnimes.length > 0) {
+        exibirAnimes(todosAnimes);
+    }
 };
 
 // Inicializa o botão de comentários

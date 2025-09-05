@@ -138,7 +138,7 @@ body>div {
     position: absolute;
     right: 0;
     background-color: white;
-    min-width: 160px;
+    min-width: 200px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     z-index: 1001;
@@ -186,7 +186,7 @@ body>div {
 .submenu-content {
     max-height: 0;
     overflow: hidden;
-    padding-left: 20px;
+    padding-left: 5px;
     background-color: #f8f9fa;
     border-left: 3px solid #007cba;
     opacity: 0;
@@ -814,7 +814,7 @@ button:not(.select2-selection__clear):hover {
 
 #imagemPersonagemOpcoes {
     flex-direction: column;
-    margin: 5px 0;
+    margin: 5px 5px;
 }
 
 /* Estilos para lista de personagens */
@@ -941,14 +941,6 @@ button:not(.select2-selection__clear):hover {
     overflow: hidden;
     transition: height 0.3s ease;
     height: 80px;
-}
-
-.personagem-collapse.expanded {
-    /* Altura será definida via JavaScript */
-}
-
-.personagem-collapse:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
 }
 
 .personagem-collapse-header {

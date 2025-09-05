@@ -294,7 +294,7 @@ function moverHoverCard(e) {
         left = 'auto';
         right = window.innerWidth - e.pageX + 'px';
     } else {
-        left = left + 'px'
+        left = left + 'px';
     }
 
     // Verifica se o card sairia da tela na parte inferior
