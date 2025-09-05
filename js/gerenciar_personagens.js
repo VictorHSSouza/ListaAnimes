@@ -282,7 +282,7 @@ function mostrarHoverCard(e, personagem) {
 function moverHoverCard(e) {
     const hoverCard = document.getElementById('personagemHoverCard');
     const cardWidth = 400; // max-width do card
-    const cardHeight = 200; // altura aproximada do card
+    const cardHeight = 300; // altura aproximada do card
 
     let left = e.pageX + 20;
     let right = 'auto';

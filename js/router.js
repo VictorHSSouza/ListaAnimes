@@ -88,6 +88,9 @@ class Router {
             const html = await response.text();
             document.getElementById('app-content').innerHTML = html;
             
+            // Rola para o topo da página
+            window.scrollTo(0, 0);
+            
             // Carrega o script específico da página
             this.loadPageScript(path);
             

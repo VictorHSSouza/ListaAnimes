@@ -106,13 +106,24 @@ function exibirPersonagensAnime(anime) {
         const personagemIndex = anime.personagens.findIndex(p => p.nome === decodeURIComponent(personagemNome));
         if (personagemIndex !== -1) {
             setTimeout(() => {
-                toggleCollapse(personagemIndex);
-                // Faz scroll até o card do personagem
-                const personagemCard = document.getElementById(`personagem-${personagemIndex}`);
-                if (personagemCard) {
-                    personagemCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const targetCollapse = document.getElementById(`personagem-${personagemIndex}`);
+                if (targetCollapse) {
+                    // Calcula altura real do conteúdo
+                    targetCollapse.style.height = 'auto';
+                    const fullHeight = targetCollapse.scrollHeight + 'px';
+                    targetCollapse.style.height = '80px';
+                    
+                    // Força reflow e aplica altura final
+                    targetCollapse.offsetHeight;
+                    targetCollapse.classList.add('expanded');
+                    targetCollapse.style.height = fullHeight;
+                    
+                    setTimeout(() => {
+                        // Faz scroll até o card do personagem
+                        targetCollapse.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
                 }
-            }, 200);
+            }, 400);
         }
     }
 }
@@ -145,25 +156,42 @@ function mostrarSemPersonagens(animeNome) {
     container.innerHTML = '<p style="text-align: center; color: #666; font-size: 18px; margin: 40px 0;">Nenhum personagem cadastrado para este anime</p>';
 }
 
+// Função para redimensionar grid items
+function resizeGridItems() {
+    const grid = document.querySelector('.personagens-grid');
+    if (!grid) return;
+    
+    const rowHeight = parseInt(getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+    const rowGap = parseInt(getComputedStyle(grid).getPropertyValue('gap'));
+
+    grid.querySelectorAll('.personagem-collapse').forEach(item => {
+        item.style.gridRowEnd = `span ${Math.ceil((item.scrollHeight + rowGap) / (rowHeight + rowGap))}`;
+    });
+}
+
 // Função para controlar collapse (apenas um aberto por vez)
 window.toggleCollapse = (index) => {
     const targetCollapse = document.getElementById(`personagem-${index}`);
-    
-    // Se o collapse clicado já está aberto, fecha ele
-    if (targetCollapse && targetCollapse.classList.contains('expanded')) {
-        targetCollapse.classList.remove('expanded');
-        return;
-    }
+    const wasExpanded = targetCollapse && targetCollapse.classList.contains('expanded');
     
     // Fecha todos os collapses
     const allCollapses = document.querySelectorAll('.personagem-collapse');
     allCollapses.forEach(collapse => {
         collapse.classList.remove('expanded');
+        collapse.style.height = '80px';
     });
     
-    // Abre o collapse clicado
-    if (targetCollapse) {
+    // Se o collapse clicado não estava aberto, abre ele
+    if (targetCollapse && !wasExpanded) {
+        // Calcula altura real do conteúdo
+        targetCollapse.style.height = 'auto';
+        const fullHeight = targetCollapse.scrollHeight + 'px';
+        targetCollapse.style.height = '80px';
+        
+        // Força reflow e aplica altura final
+        targetCollapse.offsetHeight;
         targetCollapse.classList.add('expanded');
+        targetCollapse.style.height = fullHeight;
     }
 };
 

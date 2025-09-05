@@ -38,7 +38,7 @@ body.loaded {
     visibility: visible;
 }
 
-body>div{
+body>div {
     display: flex;
     min-height: 140vh;
     flex-direction: column;
@@ -841,7 +841,7 @@ button:not(.select2-selection__clear):hover {
     grid-column: 1 / -1;
 }
 
-.personagem-item>div{
+.personagem-item>div {
     display: flex;
 }
 
@@ -897,8 +897,8 @@ button:not(.select2-selection__clear):hover {
 }
 
 .hover-card-image {
-    width: 80px;
-    height: 100px;
+    width: 100px;
+    height: auto;
     object-fit: cover;
     border-radius: 4px;
     flex-shrink: 0;
@@ -931,6 +931,7 @@ button:not(.select2-selection__clear):hover {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+    padding: 30px 0;
 }
 
 .personagem-collapse {
@@ -938,12 +939,16 @@ button:not(.select2-selection__clear):hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     overflow: hidden;
-    transition: all 0.3s ease;
-    max-height: 80px;
+    transition: height 0.3s ease;
+    height: 80px;
 }
 
 .personagem-collapse.expanded {
-    max-height: 500px;
+    /* Altura será definida via JavaScript */
+}
+
+.personagem-collapse:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
 }
 
 .personagem-collapse-header {
@@ -984,24 +989,20 @@ button:not(.select2-selection__clear):hover {
 }
 
 .personagem-collapse-content {
-    padding: 15px;
+    padding: 20px;
     border-top: 1px solid #eee;
     display: flex;
     gap: 15px;
-    align-items: flex-start;
 }
 
 .personagem-collapse-image {
     width: 120px;
-    height: 150px;
+    height: auto;
     object-fit: cover;
     border-radius: 8px;
     flex-shrink: 0;
 }
 
-.personagem-collapse-info {
-    flex: 1;
-}
 
 .personagem-collapse-info h3 {
     margin: 0 0 10px 0;
@@ -1369,6 +1370,17 @@ textarea {
         align-items: center;
         justify-content: center;
         border-radius: 8px;
+    }
+
+    .personagens-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .personagem-collapse-image {
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        align-self: center;
     }
 }
 
@@ -1770,21 +1782,6 @@ textarea {
         height: auto;
     }
 
-    .personagens-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .personagem-collapse-content {
-        flex-direction: column;
-    }
-
-    .personagem-collapse-image {
-        width: 100%;
-        max-width: 150px;
-        height: auto;
-        align-self: center;
-    }
-
     .footer {
         margin-top: 30px;
         padding: 30px 0 15px;
@@ -1804,5 +1801,17 @@ textarea {
         margin-top: 20px;
         padding-top: 15px;
         font-size: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .personagem-collapse-content {
+        flex-direction: column;
+    }
+
+    .personagem-collapse-image {
+        width: 100%;
+        max-width: 500px;
+        align-self: center;
     }
 }
