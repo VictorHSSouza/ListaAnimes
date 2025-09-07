@@ -1,7 +1,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { firebaseConfig } from './config.js';
+import { firebaseConfig, AUTHORIZED_EMAIL } from './config.js';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -23,7 +23,7 @@ window.sair = async () => {
 };
 
 // Email autorizado
-const EMAIL_AUTORIZADO = 'victorhenriquesantanasouza@gmail.com';
+const EMAIL_AUTORIZADO = AUTHORIZED_EMAIL;
 
 // Monitora estado de autenticação
 onAuthStateChanged(auth, (user) => {
