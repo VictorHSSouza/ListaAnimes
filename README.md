@@ -53,7 +53,6 @@ ListaAnimes/
 │   ├── alterar.html              # Admin - Editar animes
 │   ├── detalhes.html             # Detalhes do anime + temporadas
 │   ├── estatisticas.html         # Gráficos e estatísticas
-│   └── outros.html               # Conteúdo adulto (protegido)
 ├── js/
 │   ├── router.js                 # Sistema de roteamento SPA
 │   ├── all.js                    # Firebase config + funções globais
@@ -62,7 +61,6 @@ ListaAnimes/
 │   ├── gerenciar_personagens.js  # Gerenciamento de personagens
 │   ├── detalhes.js               # Página de detalhes
 │   ├── estatisticas.js           # Gráficos Chart.js
-│   └── outros.js                 # Conteúdo protegido
 ├── css/
 │   ├── styles.css                # Estilos principais + responsivo
 │   └── bootstrap-utils.css       # Utilitários CSS
@@ -88,7 +86,6 @@ ListaAnimes/
 3. **Gerenciar Personagens**:
    - Cadastrar personagens com anime de origem
    - Sistema completo de CRUD
-4. **Outros**: Acesso a conteúdo adulto protegido
 
 ## 🔐 Autenticação
 
