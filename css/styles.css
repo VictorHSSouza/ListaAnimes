@@ -1188,6 +1188,457 @@ textarea {
     margin-top: 30px;
 }
 
+/* Representações */
+.representacao-categoria {
+    margin-bottom: 40px;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+#btn-nova-representacao{
+    width: auto !important;
+    white-space: nowrap;
+}
+
+#titulo-representacao{
+    width: 100% !important;
+    margin-left: 0%;
+    margin-right: 0%;
+}
+
+.representacao-titulo {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #007cba;
+    padding-bottom: 10px;
+}
+
+.representacao-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.card-principal {
+    background: white;
+    border: 2px solid #007cba;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0, 123, 186, 0.2);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.card-principal:hover {
+    transform: translateY(-5px);
+}
+
+.cards-secundarios {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.card-secundario {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.card-secundario:hover {
+    transform: translateY(-2px);
+    border-color: #007cba;
+    z-index: 10;
+}
+
+.card-personagem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.card-personagem img {
+    width: 100%;
+    max-width: 160px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.card-secundario .card-personagem img {
+    max-width: 80px;
+    height: 100px;
+}
+
+.card-personagem h4 {
+    margin: 0 0 5px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.card-secundario .card-personagem h4 {
+    font-size: 12px;
+}
+
+.card-personagem p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.card-secundario .card-personagem p {
+    font-size: 11px;
+}
+
+.posicao-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #007cba;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    z-index: 10;
+}
+
+.card-principal {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-secundario {
+    position: relative;
+}
+
+.representacao-categoria .admin-btn {
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10;
+}
+
+.admin-btn:hover {
+    transform: scale(1.1);
+}
+
+#representacao-excluir{
+    background: #dc3545;
+}
+
+#representacao-excluir:hover{
+    background: #c82333;
+}
+
+#representacao-adicionar{
+    background: #28a745;
+}
+
+#representacao-adicionar:hover{
+    background: #218838;
+}
+
+#representacao-alterar{
+    background: #ffc107;
+}
+
+#representacao-alterar:hover{
+    background: #e0a800;
+}
+
+.representacao-button{
+    display: flex;
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    gap: 5px;
+    z-index: 10;
+}
+
+#titulo-alterar-representacao{
+    width: 100%;
+    margin: 0;
+}
+
+/* Modal para seleção de personagem */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+}
+
+.modal-title {
+    font-size: 20px;
+    color: #333;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px !important;
+    cursor: pointer;
+    padding: 0;
+    width: 30px !important;
+    height: 30px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.modal-close:hover {
+    color: #ddd;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-form-group {
+    margin-bottom: 15px;
+}
+
+.modal-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.modal-form-group select {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: space-around;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0% !important;
+    transition: background-color 0.3s ease;
+}
+
+.modal-btn-primary {
+    background: #007cba;
+    color: white;
+}
+
+.modal-btn-primary:hover {
+    background: #005a87;
+}
+
+.modal-btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.modal-btn-secondary:hover {
+    background: #545b62;
+}
+
+/* Lista de personagens ordenável */
+.personagens-sortable {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    background: #f9f9f9;
+}
+
+.personagens-sortable .personagem-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin: 5px 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: move;
+    transition: all 0.3s ease;
+}
+
+.personagens-sortable .personagem-item:hover {
+    background: #f0f8ff;
+    border-color: #007cba;
+}
+
+.personagens-sortable .personagem-item.dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+}
+
+.personagem-posicao {
+    background: #007cba;
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.personagem-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.personagem-info img {
+    width: 40px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.personagem-dados {
+    flex: 1;
+}
+
+.personagem-dados h5 {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.personagem-dados p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.drag-handle {
+    color: #999;
+    font-size: 18px;
+    cursor: grab;
+    flex-shrink: 0;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.personagem-remove {
+    background: #dc3545 !important;
+    color: white;
+    border: none;
+    border-radius: 50% !important;
+    width: 25px !important;
+    height: 25px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.personagem-remove:hover {
+    background: #c82333 !important;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .representacao-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .representacao-button{
+        right: -5px;
+    }
+
+    .cards-secundarios {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+    
+    .card-secundario .card-personagem img {
+        max-width: 60px;
+        height: 80px;
+    }
+    
+    .card-secundario .card-personagem h4 {
+        font-size: 10px;
+    }
+    
+    .card-secundario .card-personagem p {
+        font-size: 9px;
+    }
+    
+
+}
+
 /* Estatísticas */
 .stats-grid {
     display: grid;
@@ -1413,6 +1864,7 @@ textarea {
 
     h2 {
         margin-left: 15px;
+        margin-right: 15px;
     }
 
     .anime {

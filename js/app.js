@@ -165,7 +165,8 @@ async function adicionarNovoAnime() {
             nome: nome,
             nota: nota,
             generos: generos,
-            descricao: descricao
+            descricao: descricao,
+            dataInsercao: new Date()
         };
         
         // Adiciona campos opcionais apenas se não forem undefined

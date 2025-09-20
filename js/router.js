@@ -11,6 +11,7 @@ class Router {
             'alterar_personagem': 'pages/personagens/alterar.html',
             'detalhes': 'pages/animes/detalhes.html',
             'detalhes_personagem': 'pages/personagens/detalhes.html',
+            'representacoes': 'pages/personagens/representacoes.html',
             'outros': 'pages/outros.html',
             'estatisticas': 'pages/estatisticas.html'
         };
@@ -118,6 +119,7 @@ class Router {
             'detalhes': 'js/detalhes.js',
             'detalhes_personagem': 'js/detalhes_personagem.js',
             'alterar_personagem': 'js/alterar_personagem.js',
+            'representacoes': 'js/representacoes.js',
             'outros': 'js/outros.js',
             'estatisticas': 'js/estatisticas.js'
         };
@@ -148,6 +150,7 @@ class Router {
             'detalhes': 'Detalhes do Anime',
             'detalhes_personagem': 'Detalhes do Personagem',
             'alterar_personagem': 'Alterar Personagem',
+            'representacoes': 'Representações - Lista de Animes',
             'outros': 'Outros - Lista de Animes',
             'estatisticas': 'Estatísticas - Lista de Animes'
         };

@@ -3,13 +3,90 @@
 <div id="representacoes-content" style="display: none;">
     <div class="admin-header">
         <h1 class="detalhes_titulo">Representações</h1>
-        <div id="div-voltar">
+        <div id="div-voltar" class="botoes-topo">
             <button onclick="window.goBack ? window.goBack() : navigateTo('index')" class="btn-voltar">← Voltar</button>
+            <button id="btn-nova-representacao" onclick="abrirModalNovaRepresentacao()"
+                style="display: none; margin-left: 10px;">+ Nova Representação</button>
         </div>
     </div>
 
     <div id="representacoes-container">
-        <!-- Conteúdo das representações será inserido aqui -->
+        <!-- Categorias de representações serão inseridas aqui -->
+    </div>
+</div>
+
+<!-- Modal para seleção de personagem -->
+<div id="modal-personagem" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Selecionar Personagem</h3>
+            <button class="modal-close" onclick="fecharModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="form-selecionar-personagem">
+                <div class="modal-form-group">
+                    <label for="personagem-select">Escolha um personagem:</label>
+                    <select id="personagem-select" required>
+                        <option value="">Selecione um personagem...</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="modal-btn modal-btn-secondary" onclick="fecharModal()">Cancelar</button>
+            <button type="submit" form="form-selecionar-personagem"
+                class="modal-btn modal-btn-primary">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para nova representação -->
+<div id="modal-nova-representacao" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Nova Representação</h3>
+            <button class="modal-close" onclick="fecharModalNova()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="form-nova-representacao">
+                <div class="modal-form-group">
+                    <label for="titulo-representacao">Título da Representação:</label>
+                    <input type="text" id="titulo-representacao" placeholder="Ex: Melhores Protagonistas" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="modal-btn modal-btn-secondary" onclick="fecharModalNova()">Cancelar</button>
+            <button type="submit" form="form-nova-representacao" class="modal-btn modal-btn-primary">Criar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para alterar representação -->
+<div id="modal-alterar-representacao" class="modal-overlay">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Alterar Representação</h3>
+            <button class="modal-close" onclick="fecharModalAlterar()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="form-alterar-representacao">
+                <div class="modal-form-group">
+                    <label for="titulo-alterar-representacao">Título da Representação:</label>
+                    <input type="text" id="titulo-alterar-representacao" required>
+                </div>
+                <div class="modal-form-group">
+                    <label>Ordem dos Personagens (arraste para reordenar):</label>
+                    <div id="personagens-sortable" class="personagens-sortable">
+                        <!-- Personagens serão inseridos aqui -->
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="modal-btn modal-btn-secondary" onclick="fecharModalAlterar()">Cancelar</button>
+            <button type="submit" form="form-alterar-representacao" class="modal-btn modal-btn-primary">Salvar</button>
+        </div>
     </div>
 </div>
 
