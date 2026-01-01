@@ -116,7 +116,8 @@ async function carregarAnime() {
             // Pega a descrição mais recente
             let descricaoAtual = dadosParaEdicao.descricao;
             if (dadosParaEdicao.descricoes && dadosParaEdicao.descricoes.length > 0) {
-                descricaoAtual = dadosParaEdicao.descricoes[dadosParaEdicao.descricoes.length - 1];
+                const ultimaDescricao = dadosParaEdicao.descricoes[dadosParaEdicao.descricoes.length - 1];
+                descricaoAtual = typeof ultimaDescricao === 'string' ? ultimaDescricao : ultimaDescricao.texto;
             }
             document.getElementById('descricao').value = descricaoAtual || '';
 
@@ -219,9 +220,9 @@ if (alterarForm) {
                 }
 
                 // Verifica se a descrição mudou
-                const descricoesExistentes = temporadaAtual.descricoes || [temporadaAtual.descricao].filter(Boolean);
-                const descricaoAtual = descricoesExistentes[descricoesExistentes.length - 1] || '';
-                const novasDescricoes = descricao !== descricaoAtual ? [...descricoesExistentes, descricao] : descricoesExistentes;
+                const descricoesExistentes = temporadaAtual.descricoes || [{ texto: temporadaAtual.descricao, data: new Date() }].filter(d => d.texto);
+                const descricaoAtual = descricoesExistentes.length > 0 ? descricoesExistentes[descricoesExistentes.length - 1].texto : '';
+                const novasDescricoes = descricao !== descricaoAtual ? [...descricoesExistentes, { texto: descricao, data: new Date() }] : descricoesExistentes;
 
                 // Atualiza temporada
                 const novaTemporadaData = {
@@ -315,9 +316,9 @@ if (alterarForm) {
                     }
                 }
 
-                const descricoesExistentes = animeAtual.descricoes || [animeAtual.descricao].filter(Boolean);
-                const descricaoAtual = descricoesExistentes[descricoesExistentes.length - 1] || '';
-                const novasDescricoes = descricao !== descricaoAtual ? [...descricoesExistentes, descricao] : descricoesExistentes;
+                const descricoesExistentes = animeAtual.descricoes || [{ texto: animeAtual.descricao, data: new Date() }].filter(d => d.texto);
+                const descricaoAtual = descricoesExistentes.length > 0 ? descricoesExistentes[descricoesExistentes.length - 1].texto : '';
+                const novasDescricoes = descricao !== descricaoAtual ? [...descricoesExistentes, { texto: descricao, data: new Date() }] : descricoesExistentes;
 
                 const updateData = {
                     nome: nome,

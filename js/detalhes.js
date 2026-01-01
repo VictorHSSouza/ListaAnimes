@@ -78,7 +78,8 @@ function exibirDetalhes(anime, temporada = null) {
     if (isTemporada) {
         if (dados.descricoes && dados.descricoes.length > 0) {
             descricoesHtml = dados.descricoes.map((desc, index) => {
-                const descSegura = desc.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const textoDesc = typeof desc === 'string' ? desc : desc.texto;
+                const descSegura = textoDesc.replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 return `<div class="descricao-item">
                     <strong>Versão ${index + 1}:</strong>
                     <p>${descSegura}</p>
@@ -93,7 +94,8 @@ function exibirDetalhes(anime, temporada = null) {
     } else {
         if (anime.descricoes && anime.descricoes.length > 0) {
             descricoesHtml = anime.descricoes.map((desc, index) => {
-                const descSegura = desc.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const textoDesc = typeof desc === 'string' ? desc : desc.texto;
+                const descSegura = textoDesc.replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 return `<div class="descricao-item">
                     <strong>Versão ${index + 1}:</strong>
                     <p>${descSegura}</p>

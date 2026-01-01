@@ -166,6 +166,7 @@ async function adicionarNovoAnime() {
             nota: nota,
             generos: generos,
             descricao: descricao,
+            descricoes: [{ texto: descricao, data: new Date() }],
             dataInsercao: new Date()
         };
         
@@ -281,7 +282,7 @@ async function adicionarTemporada() {
             nome: nome,
             nota: nota,
             descricao: descricao,
-            descricoes: [descricao]
+            descricoes: [{ texto: descricao, data: new Date() }]
         };
 
         // Adiciona campos opcionais apenas se não forem undefined
@@ -427,7 +428,8 @@ function exibirAnimes(animes) {
         // Pega a descrição mais recente
         let descricaoMaisRecente = anime.descricao;
         if (anime.descricoes && anime.descricoes.length > 0) {
-            descricaoMaisRecente = anime.descricoes[anime.descricoes.length - 1];
+            const ultimaDescricao = anime.descricoes[anime.descricoes.length - 1];
+            descricaoMaisRecente = typeof ultimaDescricao === 'string' ? ultimaDescricao : ultimaDescricao.texto;
         }
 
         // Verifica se comentários estão habilitados
